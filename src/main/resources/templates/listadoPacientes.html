@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Pacientes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Pacientes</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="paciente : ${pacientes}">
+                    <td th:text="${paciente.id}"></td>
+                    <td th:text="${paciente.nombres}"></td>
+                    <td th:text="${paciente.apellidos}"></td>
+                    <td th:text="${paciente.fechaNacimiento}"></td>
+                    <td th:text="${paciente.telefono}"></td>
+                    <td th:text="${paciente.direccion}"></td>
+                    <td th:text="${paciente.email}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/pacientes/delete/' + ${paciente.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/pacientes/update/' + ${paciente.id}}" method="post">
+                                <button type="submit" class="btn btn-success">Actualizar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/pacientes/new_frontend'">Nuevo paciente</button>
+        <button type="button" class="btn btn-primary" onclick="location.href=''">Buscar paciente</button>
+    </div>
+</body>
+</html>

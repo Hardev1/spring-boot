@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Respuesta Actualización Odontólogo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Respuesta Actualización Odontólogo</h1>
+        <p th:if="${mensajeActualizacion != null}" th:text="${mensajeActualizacion}" class="lead text-success"></p>
+        <a href="/odontologo/all_frontend" class="btn btn-primary">Volver al Listado</a>
+    </div>
+</body>
+</html>

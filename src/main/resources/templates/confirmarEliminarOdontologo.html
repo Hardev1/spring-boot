@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirmar Eliminación de Odontólogo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Eliminación de Odontólogo</h1>
+        <p>¿Estás seguro de que deseas eliminar este registro?"></span>?</p>
+        <form th:action="@{'/odontologo/delete/' + ${id}}" method="post">
+            <button type="submit" class="btn btn-danger mr-2">Eliminar</button>
+            <a href="/odontologo/all_frontend" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

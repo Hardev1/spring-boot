@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Odontólogos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Odontólogos</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Especialidad</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="odontologo : ${odontologos}">
+                    <td th:text="${odontologo.id}"></td>
+                    <td th:text="${odontologo.nombres}"></td>
+                    <td th:text="${odontologo.apellidos}"></td>
+                    <td th:text="${odontologo.especialidad}"></td>
+                    <td th:text="${odontologo.telefono}"></td>
+                    <td th:text="${odontologo.email}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/odontologo/delete/' + ${odontologo.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/odontologo/update/' + ${odontologo.id}}" method="post">
+                                <button type="submit" class="btn btn-success">Actualizar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/odontologo/new_frontend'">Nuevo odontólogo</button>
+        <button type="button" class="btn btn-primary" onclick="location.href=''">Buscar odontólogo</button>
+    </div>
+</body>
+</html>
