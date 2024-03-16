@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crear Nueva Cita</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Nueva Cita</h1>
+        <form th:action="@{/cita/new_frontend}" method="post">
+            <div class="form-group">
+                <label for="pacienteId">Paciente:</label>
+                <select class="form-control" id="pacienteId" name="pacienteId" required>
+                    <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nombres + ' ' + paciente.apellidos}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="fechaHora">Fecha y Hora:</label>
+                <input type="datetime-local" class="form-control" id="fechaHora" name="fechaHora" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="motivoConsulta">Motivo de Consulta:</label>
+                <input type="text" class="form-control" id="motivoConsulta" name="motivoConsulta" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="/cita/all_frontend" class="btn btn-outline-danger">Volver al Listado</a>
+        </form>
+    </div>
+</body>
+</html>

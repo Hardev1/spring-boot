@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Citas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Citas</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Paciente</th>
+                    <th>Fecha y Hora</th>
+                    <th>Motivo de Consulta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cita : ${citas}">
+                    <td th:text="${cita.id}"></td>
+                    <td th:text="${cita.paciente.nombres + ' ' + cita.paciente.apellidos}"></td>
+                    <td th:text="${#temporals.format(cita.fechaHora, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(cita.fechaHora, 'h:mm a')}"></td>
+                    <td th:text="${cita.motivoConsulta}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/cita/delete/' + ${cita.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/cita/update/' + ${cita.id}}" method="get">
+                                <button type="submit" class="btn btn-success">Editar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/cita/new_frontend'">Nueva cita</button>
+    </div>
+</body>
+</html>

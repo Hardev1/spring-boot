@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     Page<Cita> findByPaciente_Id(Integer pacienteId, Pageable pageable);
 
     List<Cita> findByFechaHoraBetween(LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    List<Cita> findByFechaHora(LocalDateTime fechaHora);
 }

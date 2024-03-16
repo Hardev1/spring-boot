@@ -2,46 +2,62 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Cita;
 import com.example.demo.repository.CitaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/agenda")
 public class AgendaController {
 
-    @Autowired
-    private CitaRepository citaRepository;
+    private final CitaRepository citaRepository;
 
-    @GetMapping("/diaria")
-    public ResponseEntity<List<Cita>> verAgendaDiaria(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-        LocalDateTime inicioDelDia = fecha.atStartOfDay();
-        LocalDateTime finDelDia = fecha.atTime(23, 59, 59);
-        List<Cita> citasDelDia = citaRepository.findByFechaHoraBetween(inicioDelDia, finDelDia);
-        return ResponseEntity.ok(citasDelDia);
+    // Constructor para inyección de dependencias
+    public AgendaController(CitaRepository citaRepository) {
+        this.citaRepository = citaRepository;
     }
 
-    @GetMapping("/semanal")
-    public ResponseEntity<List<Cita>> verAgendaSemanal(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-    	
-    	LocalDateTime inicioDeLaSemana = fecha.minusDays(fecha.getDayOfWeek().getValue() - 1).atStartOfDay();
-
-    	LocalDateTime finDeLaSemana = inicioDeLaSemana.plusDays(6);
-    	finDeLaSemana = finDeLaSemana.withHour(23).withMinute(59).withSecond(59);
-        List<Cita> citasDeLaSemana = citaRepository.findByFechaHoraBetween(inicioDeLaSemana, finDeLaSemana);
-        return ResponseEntity.ok(citasDeLaSemana);
+    @GetMapping("/agenda_diaria")
+    public String verAgendaDiaria(Model model) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(23, 59, 59);
+        List<Cita> citasDiarias = citaRepository.findByFechaHoraBetween(startOfDay, endOfDay);
+        model.addAttribute("citas", citasDiarias);
+        return "cita/listadoCitas";
     }
 
-    @GetMapping("/mensual")
-    public ResponseEntity<List<Cita>> verAgendaMensual(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-        LocalDateTime inicioDelMes = fecha.withDayOfMonth(1).atStartOfDay();
-        LocalDateTime finDelMes = fecha.withDayOfMonth(fecha.lengthOfMonth()).atTime(23, 59, 59);
-        List<Cita> citasDelMes = citaRepository.findByFechaHoraBetween(inicioDelMes, finDelMes);
-        return ResponseEntity.ok(citasDelMes);
+    @GetMapping("/agenda_semanal")
+    public String verAgendaSemanal(Model model) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate startDate = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).toLocalDate();
+        LocalDate endDate = startDate.plusDays(6); // Fin de la semana
+        LocalDateTime startOfWeek = startDate.atStartOfDay();
+        LocalDateTime endOfWeek = endDate.atTime(23, 59, 59);
+        List<Cita> citasSemanales = citaRepository.findByFechaHoraBetween(startOfWeek, endOfWeek);
+        model.addAttribute("citas", citasSemanales);
+        return "cita/listadoCitas";
+    }
+
+    @GetMapping("/agenda_mensual")
+    public String verAgendaMensual(Model model) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate startDate = now.withDayOfMonth(1).toLocalDate(); // Primer día del mes
+        LocalDate endDate = startDate.plusMonths(1).minusDays(1); // Último día del mes
+        LocalDateTime startOfMonth = startDate.atStartOfDay();
+        LocalDateTime endOfMonth = endDate.atTime(23, 59, 59);
+        List<Cita> citasMensuales = citaRepository.findByFechaHoraBetween(startOfMonth, endOfMonth);
+        model.addAttribute("citas", citasMensuales);
+        return "cita/listadoCitas";
     }
 }

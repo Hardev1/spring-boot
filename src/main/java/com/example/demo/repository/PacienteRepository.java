@@ -1,6 +1,9 @@
 package com.example.demo.repository;
 
 import com.example.demo.entity.Paciente;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -28,5 +31,6 @@ public interface PacienteRepository extends CrudRepository<Paciente, Integer> {
      * @param pageable Objeto Pageable para permitir la paginación de resultados.
      * @return Una página de todos los pacientes disponibles.
      */
+    List<Paciente> findAll();
     Page<Paciente> findAll(Pageable pageable);
 }

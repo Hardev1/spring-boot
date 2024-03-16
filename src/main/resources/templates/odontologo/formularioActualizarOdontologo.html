@@ -7,31 +7,30 @@
 <body>
     <div class="container">
         <h1 class="mt-5">Actualizar Odontólogo</h1>
-        <form th:action="@{'/odontologo/update/' + ${odontologo.id}}" method="post">
-            <input type="hidden" name="_method" value="POST">
+        <form th:action="@{'/odontologo/updateDB/' + ${user.id}}" method="post">
             <div class="form-group">
                 <label for="nombres">Nombres:</label>
-                <input type="text" class="form-control" id="nombres" name="nombres" th:value="${odontologo.nombres}" required>
+                <input type="text" class="form-control" id="nombres" name="nombres" th:value="${user.nombres}" required>
             </div>
             
             <div class="form-group">
                 <label for="apellidos">Apellidos:</label>
-                <input type="text" class="form-control" id="apellidos" name="apellidos" th:value="${odontologo.apellidos}" required>
+                <input type="text" class="form-control" id="apellidos" name="apellidos" th:value="${user.apellidos}" required>
             </div>
             
             <div class="form-group">
                 <label for="especialidad">Especialidad:</label>
-                <input type="text" class="form-control" id="especialidad" name="especialidad" th:value="${odontologo.especialidad}" required>
+                <input type="text" class="form-control" id="especialidad" name="especialidad" th:value="${user.especialidad}" required>
             </div>
             
             <div class="form-group">
                 <label for="telefono">Teléfono:</label>
-                <input type="text" class="form-control" id="telefono" name="telefono" th:value="${odontologo.telefono}" required>
+                <input type="text" class="form-control" id="telefono" name="telefono" th:value="${user.telefono}" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" th:value="${odontologo.email}" required>
+                <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
             </div>
             
             <button type="submit" class="btn btn-primary">Guardar</button>

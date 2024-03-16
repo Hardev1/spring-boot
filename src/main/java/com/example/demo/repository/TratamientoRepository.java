@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.entity.Tratamiento;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,5 +30,5 @@ public interface TratamientoRepository extends CrudRepository<Tratamiento, Integ
      * @param pageable Objeto Pageable para permitir la paginación de resultados.
      * @return Una página de todos los tratamientos disponibles.
      */
-    Page<Tratamiento> findAll(Pageable pageable);
+    List<Tratamiento> findAll();
 }

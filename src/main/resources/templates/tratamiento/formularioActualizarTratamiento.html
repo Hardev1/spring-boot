@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Actualizar Tratamiento</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Actualizar Tratamiento</h1>
+        <form th:action="@{'/tratamiento/update/' + ${tratamiento.id}}" method="post">
+            <div class="form-group">
+                <label for="pacienteId">Paciente:</label>
+                <input type="text" class="form-control" id="pacienteId" name="pacienteId" th:value="${tratamiento.paciente.nombres}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="tipoTratamiento">Tipo de Tratamiento:</label>
+                <input type="text" class="form-control" id="tipoTratamiento" name="tipoTratamiento" th:value="${tratamiento.tipoTratamiento}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha">Fecha:</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" th:value="${fechaFormateada}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="procedimientosRealizados">Procedimientos Realizados:</label>
+                <input type="text" class="form-control" id="procedimientosRealizados" name="procedimientosRealizados" th:value="${tratamiento.procedimientosRealizados}">
+            </div>
+            
+            <div class="form-group">
+                <label for="resultados">Resultados:</label>
+                <input type="text" class="form-control" id="resultados" name="resultados" th:value="${tratamiento.resultados}">
+            </div>
+            
+            <div class="form-group">
+                <label for="medicamentosRecetados">Medicamentos Recetados:</label>
+                <input type="text" class="form-control" id="medicamentosRecetados" name="medicamentosRecetados" th:value="${tratamiento.medicamentosRecetados}">
+            </div>
+            
+            <div class="form-group">
+                <label for="instruccionesPostoperatorias">Instrucciones Postoperatorias:</label>
+                <input type="text" class="form-control" id="instruccionesPostoperatorias" name="instruccionesPostoperatorias" th:value="${tratamiento.instruccionesPostoperatorias}">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="/tratamiento/all_frontend" class="btn btn-outline-danger">Volver al Listado</a>
+        </form>
+    </div>
+</body>
+</html>

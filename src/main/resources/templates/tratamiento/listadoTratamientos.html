@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Tratamientos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tratamientos</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de Tratamiento</th>
+                    <th>Fecha</th>
+                    <th>Procedimientos Realizados</th>
+                    <th>Resultados</th>
+                    <th>Medicamentos Recetados</th>
+                    <th>Instrucciones Postoperatorias</th>
+                    <th>Paciente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="tratamiento : ${tratamientos}">
+                    <td th:text="${tratamiento.id}"></td>
+                    <td th:text="${tratamiento.tipoTratamiento}"></td>
+                    <td th:text="${tratamiento.fecha}"></td>
+                    <td th:text="${tratamiento.procedimientosRealizados}"></td>
+                    <td th:text="${tratamiento.resultados}"></td>
+                    <td th:text="${tratamiento.medicamentosRecetados}"></td>
+                    <td th:text="${tratamiento.instruccionesPostoperatorias}"></td>
+                    <td th:text="${tratamiento.paciente.nombres + ' ' + tratamiento.paciente.apellidos}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/tratamiento/delete/' + ${tratamiento.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/tratamiento/update/' + ${tratamiento.id}}" method="get">
+                                <button type="submit" class="btn btn-success">Editar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/tratamiento/new_frontend'">Nuevo tratamiento</button>
+    </div>
+</body>
+</html>

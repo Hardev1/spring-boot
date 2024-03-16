@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Crear Nuevo Tratamiento</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Nuevo Tratamiento</h1>
+        <form th:action="@{/tratamiento/new_frontend}" method="post">
+            <div class="form-group">
+                <label for="pacienteId">Paciente:</label>
+                <select class="form-control" id="pacienteId" name="pacienteId" required>
+                    <option th:each="paciente : ${pacientes}" th:value="${paciente.id}" th:text="${paciente.nombres}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="tipoTratamiento">Tipo de Tratamiento:</label>
+                <input type="text" class="form-control" id="tipoTratamiento" name="tipoTratamiento" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="fecha">Fecha:</label>
+                <input type="date" class="form-control" id="fecha" name="fecha" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="procedimientosRealizados">Procedimientos Realizados:</label>
+                <input type="text" class="form-control" id="procedimientosRealizados" name="procedimientosRealizados">
+            </div>
+            
+            <div class="form-group">
+                <label for="resultados">Resultados:</label>
+                <input type="text" class="form-control" id="resultados" name="resultados">
+            </div>
+            
+            <div class="form-group">
+                <label for="medicamentosRecetados">Medicamentos Recetados:</label>
+                <input type="text" class="form-control" id="medicamentosRecetados" name="medicamentosRecetados">
+            </div>
+            
+            <div class="form-group">
+                <label for="instruccionesPostoperatorias">Instrucciones Postoperatorias:</label>
+                <input type="text" class="form-control" id="instruccionesPostoperatorias" name="instruccionesPostoperatorias">
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="/tratamiento/all_frontend" class="btn btn-outline-danger">Volver al Listado</a>
+        </form>
+    </div>
+</body>
+</html>
