@@ -12,6 +12,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Paciente</th>
+                    <th>Odontólogo</th> <!-- Nueva columna para mostrar el odontólogo -->
                     <th>Fecha y Hora</th>
                     <th>Motivo de Consulta</th>
                     <th>Acciones</th>
@@ -21,6 +22,7 @@
                 <tr th:each="cita : ${citas}">
                     <td th:text="${cita.id}"></td>
                     <td th:text="${cita.paciente.nombres + ' ' + cita.paciente.apellidos}"></td>
+                    <td th:text="${cita.odontologo.nombres + ' ' + cita.odontologo.apellidos}"></td> <!-- Mostrar el odontólogo -->
                     <td th:text="${#temporals.format(cita.fechaHora, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(cita.fechaHora, 'h:mm a')}"></td>
                     <td th:text="${cita.motivoConsulta}"></td>
                     <td>

@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Odontologo;
 import com.example.demo.entity.Paciente;
 import com.example.demo.entity.Tratamiento;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.OdontologoRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.repository.TratamientoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -24,17 +27,23 @@ public class TratamientoController {
 
     @Autowired
     private PacienteRepository pacienteRepository;
+    
+    @Autowired
+    private OdontologoRepository odontologoRepository;
 
     @GetMapping("/new_frontend")
     public String mostrarFormularioNuevo(Model model) {
         List<Paciente> pacientes = pacienteRepository.findAll();
         model.addAttribute("pacientes", pacientes);
+        ArrayList<Odontologo> odontologos = (ArrayList<Odontologo>) odontologoRepository.findAll();
+        model.addAttribute("odontologos", odontologos);
         model.addAttribute("tratamiento", new Tratamiento());
         return "tratamiento/formularioNuevoTratamiento";
     }
 
     @PostMapping("/new_frontend")
     public String nuevo(@RequestParam int pacienteId,
+                        @RequestParam int odontologoId,
                         @RequestParam String tipoTratamiento,
                         @RequestParam LocalDate fecha,
                         @RequestParam String procedimientosRealizados,
@@ -45,8 +54,12 @@ public class TratamientoController {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado con ID: " + pacienteId));
 
+        Odontologo odontologo = odontologoRepository.findById(odontologoId)
+                .orElseThrow(() -> new RuntimeException("Odontologo no encontrado con ID: " + odontologoId));
+
         Tratamiento tratamiento = new Tratamiento();
         tratamiento.setPaciente(paciente);
+        tratamiento.setOdontologo(odontologo);
         tratamiento.setTipoTratamiento(tipoTratamiento);
         tratamiento.setFecha(fecha);
         tratamiento.setProcedimientosRealizados(procedimientosRealizados);
@@ -98,6 +111,7 @@ public class TratamientoController {
 
         // Asignar el paciente del tratamiento existente al tratamiento recibido
         tratamiento.setPaciente(tratamientoExistente.getPaciente());
+        tratamiento.setOdontologo(tratamientoExistente.getOdontologo());
 
         // Guardar el tratamiento en la base de datos
         tratamientoRepository.save(tratamiento);

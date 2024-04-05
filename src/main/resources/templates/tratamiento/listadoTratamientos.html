@@ -18,6 +18,7 @@
                     <th>Medicamentos Recetados</th>
                     <th>Instrucciones Postoperatorias</th>
                     <th>Paciente</th>
+                    <th>Odontólogo</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -31,6 +32,7 @@
                     <td th:text="${tratamiento.medicamentosRecetados}"></td>
                     <td th:text="${tratamiento.instruccionesPostoperatorias}"></td>
                     <td th:text="${tratamiento.paciente.nombres + ' ' + tratamiento.paciente.apellidos}"></td>
+                    <td th:text="${tratamiento.odontologo.nombres}"></td>
                     <td>
                         <div class="btn-group" role="group">
                             <form th:action="@{'/tratamiento/delete/' + ${tratamiento.id}}" method="get">

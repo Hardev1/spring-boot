@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.Cita;
+import com.example.demo.entity.Odontologo;
 import com.example.demo.entity.Paciente;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CitaRepository;
+import com.example.demo.repository.OdontologoRepository;
 import com.example.demo.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,10 +28,15 @@ public class CitaController {
     @Autowired
     private PacienteRepository pacienteRepository;
 
+    @Autowired
+    private OdontologoRepository odontologoRepository; // Inyectar el repositorio OdontologoRepository
+
     @GetMapping("/new_frontend")
     public String mostrarFormularioNuevo(Model model) {
         List<Paciente> pacientes = pacienteRepository.findAll();
+        List<Odontologo> odontologos = odontologoRepository.findAll(); // Obtener todos los odontólogos
         model.addAttribute("pacientes", pacientes);
+        model.addAttribute("odontologos", odontologos); // Agregar odontólogos al modelo
         model.addAttribute("cita", new Cita());
         return "cita/formularioNuevaCita";
     }
@@ -56,14 +63,18 @@ public class CitaController {
     public String nueva(@RequestParam int pacienteId,
                         @RequestParam LocalDateTime fechaHora,
                         @RequestParam String motivoConsulta,
+                        @RequestParam int odontologoId, // Agregar parámetro para el ID del odontólogo
                         Model model) {
         Paciente paciente = pacienteRepository.findById(pacienteId)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado con ID: " + pacienteId));
+        Odontologo odontologo = odontologoRepository.findById(odontologoId) // Obtener el odontólogo por su ID
+                .orElseThrow(() -> new RuntimeException("Odontólogo no encontrado con ID: " + odontologoId)); // Manejar excepción si el odontólogo no se encuentra
 
         Cita cita = new Cita();
         cita.setPaciente(paciente);
         cita.setFechaHora(fechaHora);
         cita.setMotivoConsulta(motivoConsulta);
+        cita.setOdontologo(odontologo); // Asignar el odontólogo a la cita
 
         citaRepository.save(cita);
 
@@ -81,6 +92,8 @@ public class CitaController {
         model.addAttribute("fechaHoraFormateada", cita.getFechaHora().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")));
         List<Paciente> pacientes = pacienteRepository.findAll();
         model.addAttribute("pacientes", pacientes);
+        List<Odontologo> odontologos = odontologoRepository.findAll(); 
+        model.addAttribute("odontologos", odontologos); 
         return "cita/formularioActualizarCita";
     }
 

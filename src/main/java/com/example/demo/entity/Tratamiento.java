@@ -15,6 +15,10 @@ public class Tratamiento {
     @ManyToOne
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
+    
+    @ManyToOne
+    @JoinColumn(name = "odontologo_id", nullable = false)
+    private Odontologo odontologo;
 
     @Column(name = "tipo_tratamiento", nullable = false)
     private String tipoTratamiento;
@@ -46,9 +50,17 @@ public class Tratamiento {
     public Paciente getPaciente() {
         return paciente;
     }
+    
+    public Odontologo getOdontologo() {
+        return odontologo;
+    }
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
+    }
+    
+    public void setOdontologo(Odontologo odontologo) {
+        this.odontologo = odontologo;
     }
 
     public String getTipoTratamiento() {

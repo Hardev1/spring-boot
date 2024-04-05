@@ -15,6 +15,10 @@ public class Cita {
     @ManyToOne
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
+    
+    @ManyToOne
+    @JoinColumn(name = "odontologo_id", nullable = false)
+    private Odontologo odontologo;
 
     @Column(name = "fecha_hora", nullable = false)
     private LocalDateTime fechaHora;
@@ -35,9 +39,17 @@ public class Cita {
     public Paciente getPaciente() {
         return paciente;
     }
+    
+    public Odontologo getOdontologo() {
+        return odontologo;
+    }
 
     public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
+    }
+    
+    public void setOdontologo(Odontologo odontologo) {
+        this.odontologo = odontologo;
     }
 
     public LocalDateTime getFechaHora() {

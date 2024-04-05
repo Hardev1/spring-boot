@@ -16,6 +16,13 @@
             </div>
             
             <div class="form-group">
+                <label for="odontologoId">Odontólogo:</label>
+                <select class="form-control" id="odontologoId" name="odontologoId" required>
+                    <option th:each="odontologo : ${odontologos}" th:value="${odontologo.id}" th:text="${odontologo.nombres + ' ' + odontologo.apellidos}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
                 <label for="fechaHora">Fecha y Hora:</label>
                 <input type="datetime-local" class="form-control" id="fechaHora" name="fechaHora" required>
             </div>

@@ -14,6 +14,11 @@
             </div>
             
             <div class="form-group">
+                <label for="odontologoId">Odontólogo:</label>
+                <input type="text" class="form-control" id="odontologoId" name="odontologoId" th:value="${tratamiento.odontologo.nombres}" readonly>
+            </div>
+            
+            <div class="form-group">
                 <label for="tipoTratamiento">Tipo de Tratamiento:</label>
                 <input type="text" class="form-control" id="tipoTratamiento" name="tipoTratamiento" th:value="${tratamiento.tipoTratamiento}" required>
             </div>
