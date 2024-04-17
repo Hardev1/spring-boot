@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Lista de Pacientes</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
 </head>
 <body>
     <div class="container">
@@ -11,6 +11,7 @@
             <thead class="thead-dark">
                 <tr>
                     <th>ID</th>
+                    <th>Cédula</th>
                     <th>Nombres</th>
                     <th>Apellidos</th>
                     <th>Fecha de Nacimiento</th>
@@ -21,8 +22,10 @@
                 </tr>
             </thead>
             <tbody>
+				<!--{pacientesTable}-->
                 <tr th:each="paciente : ${pacientes}">
                     <td th:text="${paciente.id}"></td>
+                    <td th:text="${paciente.cedula}"></td>
                     <td th:text="${paciente.nombres}"></td>
                     <td th:text="${paciente.apellidos}"></td>
                     <td th:text="${paciente.fechaNacimiento}"></td>

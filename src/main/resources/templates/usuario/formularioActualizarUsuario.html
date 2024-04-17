@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Actualizar Usuario</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Actualizar Usuario</h1>
+        <form th:action="@{'/usuario/updateDB/' + ${usuario.id}}" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" th:value="${usuario.nombre}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="correoElectronico">Correo Electrónico:</label>
+                <input type="email" class="form-control" id="correoElectronico" name="correoElectronico" th:value="${usuario.correoElectronico}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="perfil">Perfil:</label>
+                <select class="form-control" id="perfil" name="perfil" th:field="*{perfil.id}" required>
+                    <option th:each="perfil : ${perfiles}" th:value="${perfil.id}" th:text="${perfil.nombre}"></option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="/usuario/administrarUsuarios" class="btn btn-outline-danger">Volver al Listado</a>
+        </form>
+    </div>
+</body>
+</html>

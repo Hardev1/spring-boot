@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Asignar Perfil a Usuario</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Asignar Perfil a Usuario</h1>
+        <form th:action="@{/usuario/asignar-perfil/{id}(id=${usuario.id})}" method="post">
+            <div class="form-group">
+                <label for="nombreUsuario">Usuario:</label>
+                <input type="text" class="form-control" id="nombreUsuario" th:value="${usuario.nombre}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="perfil">Perfil:</label>
+                <select class="form-control" id="perfil" name="perfilId">
+                    <option th:each="perfil : ${perfiles}" th:value="${perfil.id}" th:text="${perfil.nombre}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Asignar Perfil</button>
+            <a href="usuario/administrarUsuarios" class="btn btn-outline-danger">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* Estilos personalizados para el odontograma */
+.tooth {
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	cursor: pointer;
+	background-image: url(/img/estado_indefinido.png);
+	background-size: cover;
+	/* Ajusta el tamaño de la imagen para cubrir completamente el área del botón */
+	background-repeat: no-repeat;
+	/* Evita que la imagen se repita */
+}
+
+
+.tooth:hover {
+	filter: brightness(120%);
+	/* Ajusta el brillo al 120% al pasar el mouse sobre el botón */
+}
+
+.tooth.selected {
+	filter: brightness(120%);
+	/* Ajusta el brillo al 120% cuando el botón está seleccionado */
+}
