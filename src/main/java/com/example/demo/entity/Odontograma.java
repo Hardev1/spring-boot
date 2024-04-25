@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,18 +37,9 @@ public class Odontograma {
 	@JoinColumn(name = "odontologo_id")
 	private Odontologo odontologo;
 
-	@ElementCollection
-	@CollectionTable(name = "estado_dental", joinColumns = @JoinColumn(name = "odontograma_id"))
-	@MapKeyColumn(name = "posicion_diente") // Nueva columna para la posición del diente
-	@Column(name = "estado")
-	private Map<String, String> estadosDentales = new HashMap<>();
-
-	@ElementCollection
-	@CollectionTable(name = "notas_dentales", joinColumns = @JoinColumn(name = "odontograma_id"))
-	@MapKeyColumn(name = "posicion_diente") // Nueva columna para la posición del diente
-	@Column(name = "nota")
-	private Map<String, String> notasDentales = new HashMap<>();
-
+	@OneToMany(mappedBy = "odontograma", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetalleDiente> detallesDientes = new ArrayList<>();
+	
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;
 
@@ -104,21 +96,13 @@ public class Odontograma {
 		this.odontologo = odontologo;
 	}
 
-	public Map<String, String> getEstadosDentales() {
-		return estadosDentales;
-	}
+	public List<DetalleDiente> getDetallesDientes() {
+        return detallesDientes;
+    }
 
-	public void setEstadosDentales(Map<String, String> estadosDentales) {
-		this.estadosDentales = estadosDentales;
-	}
-
-	public Map<String, String> getNotasDentales() {
-		return notasDentales;
-	}
-
-	public void setNotasDentales(Map<String, String> notasDentales) {
-		this.notasDentales = notasDentales;
-	}
+    public void setDetallesDientes(List<DetalleDiente> detallesDientes) {
+        this.detallesDientes = detallesDientes;
+    }
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;

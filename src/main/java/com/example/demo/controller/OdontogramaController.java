@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.entity.Paciente;
+import com.example.demo.entity.DetalleDiente;
 import com.example.demo.entity.Odontograma;
 import com.example.demo.entity.Odontologo;
 import com.example.demo.repository.OdontogramaRepository;
@@ -52,91 +53,55 @@ public class OdontogramaController extends HtmlUtils {
 
 	@PostMapping("/crear")
 	public String crearOdontograma(@RequestParam("dientesEvaluados") String[] dientesEvaluados,
-			@RequestParam("paciente") int pacienteId, @RequestParam("odontologo") int odontologoId,
-			@RequestParam Map<String, String> params) throws IOException {
+	                               @RequestParam("paciente") int pacienteId,
+	                               @RequestParam("odontologo") int odontologoId,
+	                               @RequestParam Map<String, String> notasDientesParams,
+	                               Model model) throws IOException {
 
-		// Obtener el paciente y el odontólogo de la base de datos
-		Paciente paciente = pacienteRepository.findById(pacienteId)
-				.orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
-		Odontologo odontologo = odontologoRepository.findById(odontologoId)
-				.orElseThrow(() -> new RuntimeException("Odontólogo no encontrado"));
+	    // Obtener el paciente y el odontólogo de la base de datos
+	    Paciente paciente = pacienteRepository.findById(pacienteId)
+	            .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+	    Odontologo odontologo = odontologoRepository.findById(odontologoId)
+	            .orElseThrow(() -> new RuntimeException("Odontólogo no encontrado"));
 
-		// Crear una nueva instancia de Odontograma y establecer los valores
-		Odontograma odontograma = new Odontograma();
-		odontograma.setPaciente(paciente);
-		odontograma.setOdontologo(odontologo);
-		odontograma.setFechaCreacion(LocalDateTime.now());
-		odontograma.setUltimaModificacion(LocalDateTime.now());
-		odontograma.setGuardadoAutomatico(false);
+	    // Crear una nueva instancia de Odontograma y establecer los valores
+	    Odontograma odontograma = new Odontograma();
+	    odontograma.setPaciente(paciente);
+	    odontograma.setOdontologo(odontologo);
+	    odontograma.setFechaCreacion(LocalDateTime.now());
+	    odontograma.setUltimaModificacion(LocalDateTime.now());
+	    odontograma.setGuardadoAutomatico(false);
 
-		// Convertir la lista de dientes evaluados en un mapa de estados y un mapa de
-		// notas
-		Map<String, String> estadosDentales = new HashMap<>();
-		Map<String, String> notasDentales = new HashMap<>();
+	    // Recorrer la lista de dientes evaluados para extraer el número de diente, el estado y la nota
+	    for (String diente : dientesEvaluados) {
+	    	System.out.println(diente);
+	        String[] partes = diente.split(" - ");
+	        String numeroDienteString = partes[0]; // Obtener el número de diente
+	        String estadoDental = partes[1]; // Obtener el estado dental
+	        
 
-		// Recorrer la lista de dientes evaluados para extraer el número de diente, el
-		// estado y la nota
-		for (String diente : dientesEvaluados) {
-			// Separar el número de diente y el estado dental
-			String[] partes = diente.split(" - ");
-			String[] numerodiente = partes[0].split(" ");
-			String numeroDienteString = numerodiente[2]; // Obtener el número de diente
+	        String[] parteNota = diente.split(" - Nota: ");
+	        String notaDiente = partes.length > 1 ? parteNota[1] : ""; // Obtener la nota del diente
+	        System.out.println(notaDiente);
 
-			String estadoDental = partes[1]; // Obtener el estado dental
-			// Agregar el estado dental al mapa
-			estadosDentales.put(numeroDienteString, estadoDental);
+	        // Crear una instancia de DetalleDiente y agregarla a la lista
+	        DetalleDiente detalleDiente = new DetalleDiente();
+	        detalleDiente.setPosicionDiente(numeroDienteString);
+	        detalleDiente.setEstado(estadoDental);
+	        detalleDiente.setNota(notaDiente);
+	        odontograma.getDetallesDientes().add(detalleDiente);
+	    }
 
-			// Obtener la nota del diente
-			String notaDiente = params.get("notaDiente_" + numeroDienteString);
-			System.out.println("Nota del diente " + numeroDienteString + ": " + notaDiente);
-			notasDentales.put(numeroDienteString, notaDiente);
-		}
+	    // Generar el PDF y obtener su contenido en formato de bytes
+	    byte[] pdfBytes = htmlServiceImpl.generarPdf(Arrays.asList(dientesEvaluados), paciente, odontologo, LocalDateTime.now(), "");
 
-		// Establecer los estados y notas dentales en el odontograma
-		odontograma.setEstadosDentales(estadosDentales);
-		odontograma.setNotasDentales(notasDentales);
+	    // Guardar el PDF en la entidad
+	    odontograma.setPdfOdontograma(pdfBytes);
 
-		// Generar el PDF y obtener su contenido en formato de bytes
-		byte[] pdfBytes = htmlServiceImpl.generarPdf(Arrays.asList(dientesEvaluados), paciente, odontologo,
-				LocalDateTime.now(), "");
-
-		// Guardar el PDF en la entidad
-		odontograma.setPdfOdontograma(pdfBytes);
-
-		// Guardar el Odontograma en la base de datos
-		odontogramaRepository.save(odontograma);
-
-		return "odontograma/formularioNuevoOdontograma";
-	}
-
-//byte[] pdfBytes = htmlServiceImpl.generarPdf(Arrays.asList(dientesEvaluados), paciente, odontologo, LocalDateTime.now(), "");
-
-	private Map<String, String> convertirAHashMap(String[] valores) {
-		Map<String, String> mapa = new HashMap<>();
-		if (valores != null && valores.length > 0) {
-			for (String par : valores) {
-				// Dividir cada par en clave y valor separados por "-"
-				String[] partes = par.trim().split(" - ");
-				if (partes.length == 2) {
-					// Eliminar espacios en blanco y almacenar en el mapa
-					mapa.put(partes[0].trim(), partes[1].trim());
-				}
-			}
-		}
-		return mapa;
-	}
-
-	private int obtenerNumeroDiente(String diente) {
-		// Separamos la cadena por espacios para obtener los elementos individuales
-		String[] partes = diente.split(" ");
-
-		// El número de diente está en la tercera posición del array
-		// Removemos los espacios en blanco alrededor del número antes de convertirlo a
-		// entero
-		String numeroDienteStr = partes[2].trim();
-
-		// Convertimos el número de diente a entero y lo retornamos
-		return Integer.parseInt(numeroDienteStr);
+	    // Guardar el Odontograma en la base de datos
+	    //odontogramaRepository.save(odontograma);
+	    
+	    return verProcesoOdontograma(model);
 	}
 
 	@GetMapping("/ver")

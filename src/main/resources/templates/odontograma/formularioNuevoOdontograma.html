@@ -84,6 +84,19 @@
 						<option th:each="estadoDental : ${estadosDentales}" th:value="${estadoDental}"
 							th:text="${estadoDental}"></option>
 					</select>
+					<div class="row mt-4">
+						<div class="col-md-6">
+							<h3>Diente <span class="diente-nombre"></span>:</h3>
+							<div class="form-group">
+								<!-- Agrega un campo oculto para la nota de cada diente -->
+								<input type="hidden" class="form-control nota-diente" id="notaDiente_"
+									name="notaDiente_" />
+								<label for="notaDiente_">Nota:</label>
+								<input type="text" class="form-control nota-diente" id="notaDiente_texto"
+									name="notaDiente_texto" />
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<!-- Botón para agregar un nuevo diente a evaluar -->
@@ -91,30 +104,16 @@
 				<div class="row mt-4">
 					<div class="col-md-12">
 						<button type="button" class="btn btn-primary" id="nuevoButton"
-							onclick="agregarDienteEvaluado()">Nuevo diente a
-							evaluar</button>
+							onclick="agregarDienteEvaluado()">Nuevo diente a evaluar</button>
 					</div>
 				</div>
 
 				<div id="errorMessage" style="color: red; display: none;">Por favor, seleccione un diente y su estado
-					dental antes de
-					agregar.</div>
+					dental antes de agregar.</div>
 
 				<!-- Lista de dientes evaluados -->
 				<div id="dientesEvaluadosList"></div>
 
-				<!-- Plantilla para los campos de notas -->
-				<template id="notaDienteTemplate">
-					<div class="row mt-4">
-						<div class="col-md-6">
-							<h3>Diente <span class="diente-nombre"></span>:</h3>
-							<div class="form-group">
-								<label for="notaDiente_">Nota:</label>
-								<textarea class="form-control" rows="2" id="notaDiente_" name="notaDiente_"></textarea>
-							</div>
-						</div>
-					</div>
-				</template>
 
 
 				<div class="row mt-4">

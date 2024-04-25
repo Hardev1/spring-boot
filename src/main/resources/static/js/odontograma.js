@@ -16,110 +16,116 @@ nuevoButton.disabled = true;
 
 // Función de manejo de eventos para el botón
 function procesarBoton(btn) {
-	// Remover la clase 'selected' de todos los botones
-	buttons.forEach(button => button.classList.remove('selected'));
+	  // Remover la clase 'selected' de todos los botones
+	  	buttons.forEach(button => button.classList.remove('selected'));
+	
+	  // Agregar la clase 'selected' al botón actual
+	  	btn.classList.add('selected');
+	
+	  	const botonSeleccionado = btn.value;
+	
+	  // Mostrar el elemento que indica cuál fue el diente seleccionado
+	  	dienteSeleccionadoText.style.display = 'block';
+	
+	  // Actualizar el texto con el diente seleccionado
+	  	dienteSeleccionado.innerText = botonSeleccionado;
+	
+	  // Mostrar y habilitar el botón "Nuevo diente a evaluar" si hay un diente seleccionado
+	  	nuevoButton.style.display = 'block';
+	  	nuevoButton.disabled = false;
+	
+	  // Ocultar el mensaje de error
+		errorMessage.style.display = 'none';
+	
+	  // Mostrar el campo de selección de estado dental
+	 	estadoDentalContainer.style.display = 'block';
+	
+	  // Configuración de la solicitud fetch (opcional)
+	 	const requestOptions = {
+	    	method: 'POST',
+	   	 headers: {
+	    	  'Content-Type': 'application/x-www-form-urlencoded'
+	    	},
+	   	 body: `botonSeleccionado=${encodeURIComponent(botonSeleccionado)}`
+	  	};
+	
+	  // Realizar la solicitud fetch (opcional)
+	  fetch('/odontograma/procesar-boton', requestOptions)
+	    .then(response => {
+	      if (response.ok) {
+	        return response.text();
+	      }
+	      throw new Error('Error en la solicitud.');
+	    })
+	    .then(data => {
+	      console.log('Respuesta del servidor:', data);
+	      // Puedes hacer cualquier acción adicional aquí según la respuesta del servidor
+	    })
+	    .catch(error => {
+	      console.error('Error:', error);
+	    });
+	}
 
-	// Agregar la clase 'selected' al botón actual
-	btn.classList.add('selected');
 
-	const botonSeleccionado = btn.value;
-
-	// Mostrar el elemento que indica cuál fue el diente seleccionado
-	dienteSeleccionadoText.style.display = 'block';
-
-	// Actualizar el texto con el diente seleccionado
-	dienteSeleccionado.innerText = botonSeleccionado;
-
-	// Mostrar y habilitar el botón "Nuevo diente a evaluar" si hay un diente seleccionado
-	nuevoButton.style.display = 'block';
-	nuevoButton.disabled = false;
-
-	// Ocultar el mensaje de error
-	errorMessage.style.display = 'none';
-
-	// Configuración de la solicitud fetch
-	const requestOptions = {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-		body: `botonSeleccionado=${encodeURIComponent(botonSeleccionado)}`
-	};
-
-	// Realizar la solicitud fetch
-	fetch('/odontograma/procesar-boton', requestOptions)
-		.then(response => {
-			if (response.ok) {
-				return response.text();
-			}
-			throw new Error('Error en la solicitud.');
-		})
-		.then(data => {
-			console.log('Respuesta del servidor:', data);
-			// Puedes hacer cualquier acción adicional aquí según la respuesta del servidor
-
-			// Si el procesamiento fue exitoso, muestra el select option del estado dental
-			const mostrarEstadoDental = true;
-			if (mostrarEstadoDental) {
-				document.getElementById('estadoDentalContainer').style.display = 'block';
-			}
-		})
-		.catch(error => {
-			console.error('Error:', error);
-		});
-}
 
 function agregarDienteEvaluado() {
-    const dienteSeleccionado = document.getElementById('dienteSeleccionado').textContent;
-    const estadoDentalValue = document.getElementById('estadoDental').value;
+  	const dienteSeleccionado = document.getElementById('dienteSeleccionado').textContent;
+  	const estadoDentalValue = document.getElementById('estadoDental').value;
 
-    if (dienteSeleccionado && estadoDentalValue) {
-        const nuevoDienteEvaluado = `${dienteSeleccionado} - ${estadoDentalValue}`;
-        const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
+  	const notaDienteElement = document.querySelector('#estadoDentalContainer .row');
+  	const notaDienteTexto = notaDienteElement ? notaDienteElement.querySelector('#notaDiente_texto') : null;
 
-        // Crear el elemento de lista li
-        const nuevoItem = document.createElement('li');
-        nuevoItem.textContent = nuevoDienteEvaluado;
+  	if (dienteSeleccionado && estadoDentalValue) {
+    	let notaDiente = '';
+    	if (notaDienteTexto) {
+    	  notaDiente = notaDienteTexto.value.trim();
+    	}
 
-        // Crear el campo de texto para la nota del diente
-        const notaDienteTemplate = document.getElementById('notaDienteTemplate').content.cloneNode(true);
-        const notaDienteElement = notaDienteTemplate.querySelector('.row');
-        const dienteNombreElement = notaDienteElement.querySelector('.diente-nombre');
-        const notaDienteInput = notaDienteElement.querySelector('#notaDiente_');
+    const nuevoDienteEvaluado = `${dienteSeleccionado} - ${estadoDentalValue}${notaDiente ? ' - Nota: ' + notaDiente : ' - Nota: Sin notas adicionales'}`;
+    const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
 
-        dienteNombreElement.textContent = dienteSeleccionado;
-        notaDienteInput.id = `notaDiente_${dienteSeleccionado}`;
-        notaDienteInput.name = `notaDiente_${dienteSeleccionado}`;
+    // Crear el elemento de lista li
+    const nuevoItem = document.createElement('li');
+    nuevoItem.textContent = nuevoDienteEvaluado;
 
-        // Agregar el campo de texto para la nota al elemento de lista li
-        nuevoItem.appendChild(notaDienteElement);
-        
-        // Agregar el elemento de lista li a la lista ul
-        dientesEvaluadosList.appendChild(nuevoItem);
+    // Agregar el elemento de lista li a la lista ul
+    dientesEvaluadosList.appendChild(nuevoItem);
 
-        // Actualizar el campo oculto con los dientes evaluados
-        actualizarCampoOculto();
+    // Actualizar el campo oculto con los dientes evaluados
+    actualizarCampoOculto();
 
-        // Limpiar los campos después de agregar el diente evaluado
-        limpiarCampos();
-    } else {
-        // Mostrar el mensaje de error
-        errorMessage.style.display = 'block';
-    }
+    // Limpiar los campos después de agregar el diente evaluado
+    limpiarCampos();
+  } else {
+    // Mostrar el mensaje de error
+    errorMessage.style.display = 'block';
+  }
 }
 
 function actualizarCampoOculto() {
-    const dientesEvaluadosInput = document.getElementById('dientesEvaluados');
-    const dientesEvaluadosListItems = document.querySelectorAll('#dientesEvaluadosList li');
-    const dientesEvaluados = Array.from(dientesEvaluadosListItems).map(item => item.textContent).join(',');
-    dientesEvaluadosInput.value = dientesEvaluados;
+  const dientesEvaluadosInput = document.getElementById('dientesEvaluados');
+  const dientesEvaluadosListItems = document.querySelectorAll('#dientesEvaluadosList li');
+
+  const dientesEvaluados = Array.from(dientesEvaluadosListItems).map(item => {
+    const dienteInfo = item.textContent.trim();
+
+    return `${dienteInfo}`; // Incluir la nota si está presente
+  }).join(',');
+
+  dientesEvaluadosInput.value = dientesEvaluados;
 }
 
 function limpiarCampos() {
-    document.getElementById('dienteSeleccionado').textContent = '';
-    document.getElementById('estadoDental').value = '';
-    ocultarDienteSeleccionado();
-    ocultarNuevoButton();
+  document.getElementById('dienteSeleccionado').textContent = '';
+  document.getElementById('estadoDental').value = '';
+
+  const notaDienteTexto = document.querySelector('#estadoDentalContainer #notaDiente_texto');
+  if (notaDienteTexto) {
+    notaDienteTexto.value = '';
+  }
+
+  ocultarDienteSeleccionado();
+  ocultarNuevoButton();
 }
 
 
