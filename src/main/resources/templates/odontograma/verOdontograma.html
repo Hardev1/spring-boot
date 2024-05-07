@@ -1,111 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Creación de Odontograma</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+	<head>
+		<title>Creación de Odontograma</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+			}
 
-        h1 {
-            margin-bottom: 2em;
-        }
-        
-        .container {
-			margin-bottom: 0;
-			padding-bottom: 0;
-		}
+			h1 {
+				margin-bottom: 2em;
+			}
 
-        .odontograma {
-            height: 84px;
-            width: 660px;
-            position: relative;
-        }
+			.container {
+				margin-bottom: 0;
+				padding-bottom: 0;
+			}
 
-        .info-paciente {
-            margin-bottom: 20px;
-        }
+			.odontograma {
+				height: 84px;
+				width: 660px;
+				position: relative;
+			}
 
-        .info-paciente table {
-			width: 660px;
-            border-collapse: collapse;
-            margin-bottom: 5em;
-        }
+			.info-paciente {
+				margin-bottom: 20px;
+			}
 
-        .info-paciente th,
-        .info-paciente td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
+			.info-paciente table {
+				width: 660px;
+				border-collapse: collapse;
+				margin-bottom: 5em;
+			}
 
-        .info-paciente th {
-            background-color: #f2f2f2;
-        }
+			.info-paciente th,
+			.info-paciente td {
+				border: 1px solid #ccc;
+				padding: 8px;
+				text-align: left;
+			}
 
-        .info-paciente th:first-child,
-        .info-paciente td:first-child {
-            width: 30%;
-        }
-        
-        /* Estilo para la imagen de información del odontograma */
-        .info {
-            width: 450px; /* Ancho deseado */
-            height: auto; /* Altura ajustable según la proporción de la imagen */
-            display: block; /* Para centrar la imagen horizontalmente */
-            margin-left: 100px;
-        }
-    </style>
-</head>
+			.info-paciente th {
+				background-color: #f2f2f2;
+			}
 
-<body>
-    <div class="container">
-        <h1>Odontograma de <span th:text="${paciente_nombre}"><!-- paciente_nombre --></span></h1>
+			.info-paciente th:first-child,
+			.info-paciente td:first-child {
+				width: 30%;
+			}
 
-        <div class="info-paciente">
-            <table>
-                <tr>
-                    <th>Fecha de nacimiento:</th>
-                    <td><span th:text="${paciente_fecha_nacimiento}"><!-- paciente_fecha_nacimiento --></span></td>
-                </tr>
-                <tr>
-                    <th>Teléfono:</th>
-                    <td><span th:text="${paciente_telefono}"><!-- paciente_telefono --></span></td>
-                </tr>
-                <tr>
-                    <th>Dirección:</th>
-                    <td><span th:text="${paciente_direccion}"><!-- paciente_direccion --></span></td>
-                </tr>
-                <tr>
-                    <th>Email:</th>
-                    <td><span th:text="${paciente_email}"><!-- paciente_email --></span></td>
-                </tr>
-                <tr>
-                    <th>Cédula:</th>
-                    <td><span th:text="${paciente_cedula}"><!-- paciente_cedula --></span></td>
-                </tr>
-                <tr>
-                    <th>Odontólogo:</th>
-                    <td><span th:text="${odontologo}"><!-- odontologo --></span></td>
-                </tr>
-                <tr>
-                    <th>Fecha de edición:</th>
-                    <td><span th:text="${fecha_edicion}"><!-- fecha_edicion --></span></td>
-                </tr>
-                <tr>
-                    <th>Notas adicionales:</th>
-                    <td><span th:text="${notas_adicionales}"><!-- notas_adicionales --></span></td>
-                </tr>
-            </table>
-        </div>
-		<img class="borde-superior" style="width: 640px;" src="classpath:/static/img/borde_superior.png"/>
-        <div class="odontograma">
-            <!-- insertar imagenes desde metodo de springboot -->
-        </div>
-        <img class="borde-superior" style="width: 640px;" src="classpath:/static/img/borde_inferior.png"/>
-        <img class="info" src="classpath:/static/img/info_odontograma.png"/>
-    </div>
-</body>
+			/* Estilo para la imagen de información del odontograma */
+			.info {
+				width: 450px;
+				/* Ancho deseado */
+				height: auto;
+				/* Altura ajustable según la proporción de la imagen */
+				display: block;
+				/* Para centrar la imagen horizontalmente */
+				margin-left: 100px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Odontograma de <span th:text="${paciente_nombre}"><!-- paciente_nombre --></span></h1>
+
+			<div class="info-paciente">
+				<table>
+					<tr>
+						<th>Fecha de nacimiento:</th>
+						<td><span th:text="${paciente_fecha_nacimiento}"><!-- paciente_fecha_nacimiento --></span></td>
+					</tr>
+					<tr>
+						<th>Teléfono:</th>
+						<td><span th:text="${paciente_telefono}"><!-- paciente_telefono --></span></td>
+					</tr>
+					<tr>
+						<th>Dirección:</th>
+						<td><span th:text="${paciente_direccion}"><!-- paciente_direccion --></span></td>
+					</tr>
+					<tr>
+						<th>Email:</th>
+						<td><span th:text="${paciente_email}"><!-- paciente_email --></span></td>
+					</tr>
+					<tr>
+						<th>Cédula:</th>
+						<td><span th:text="${paciente_cedula}"><!-- paciente_cedula --></span></td>
+					</tr>
+					<tr>
+						<th>Odontólogo:</th>
+						<td><span th:text="${odontologo}"><!-- odontologo --></span></td>
+					</tr>
+					<tr>
+						<th>Fecha de edición:</th>
+						<td><span th:text="${fecha_edicion}"><!-- fecha_edicion --></span></td>
+					</tr>
+					<tr>
+						<th>Comentarios generales:</th>
+						<td><span th:text="${comentarios_generales}"><!-- comentarios_generales --></span></td>
+					</tr>
+					<tr>
+						<th>Notas adicionales:</th>
+						<td><span th:text="${notas_adicionales}"><!-- notas_adicionales --></span></td>
+					</tr>
+				</table>
+			</div>
+			<img class="borde-superior" style="width: 640px;" src="classpath:/static/img/borde_superior.png" />
+			<div class="odontograma">
+				<!-- insertar imagenes desde metodo de springboot -->
+			</div>
+			<img class="borde-superior" style="width: 640px;" src="classpath:/static/img/borde_inferior.png" />
+			<img class="info" src="classpath:/static/img/info_odontograma.png" />
+		</div>
+	</body>
 
 </html>

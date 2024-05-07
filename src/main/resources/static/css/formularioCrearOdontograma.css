@@ -21,3 +21,7 @@
 	filter: brightness(120%);
 	/* Ajusta el brillo al 120% cuando el botón está seleccionado */
 }
+
+.ocultar {
+	display: none;
+}

@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -16,6 +16,11 @@ public class HtmlUtils {
 
 	@Autowired
 	private ResourceLoader resourceLoader;
+
+	public String readHtmlContentFromFile(String filePath) throws IOException {
+		Resource resource = resourceLoader.getResource(filePath);
+		return new String(Files.readAllBytes(Paths.get(resource.getURI())));
+	}
 
 	public List<String> generarPosicionesIniciales() {
 		List<String> botones = generateButtons();
@@ -38,11 +43,6 @@ public class HtmlUtils {
 		return posicionesIniciales;
 	}
 
-	public String readHtmlContentFromFile(String filePath) throws IOException {
-		Resource resource = resourceLoader.getResource(filePath);
-		return new String(Files.readAllBytes(Paths.get(resource.getURI())));
-	}
-
 	public String generarImagenesHtml(List<String> imagenesIniciales) {
 		StringBuilder imagenesHtml = new StringBuilder();
 		for (int i = 0; i < imagenesIniciales.size(); i++) {
@@ -58,15 +58,6 @@ public class HtmlUtils {
 		return String.format(
 				"<img class=\"img-fluid position-absolute\" style=\"width: 40px; height: 40px; left: %dpx; top: %dpx;\" src=\"classpath:/static/img/%s\" />",
 				distanciaX, distanciaY, imagen);
-	}
-
-	public String reemplazarImagenesEnHtml(String htmlContent, String imagenesHtml) {
-		return htmlContent.replace("<!-- insertar imagenes desde metodo de springboot -->", imagenesHtml);
-	}
-
-	public String agregarBootstrapCss(String htmlContent) {
-		String bootstrapCss = "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css\"/>";
-		return htmlContent.replace("</head>", bootstrapCss + "</head>");
 	}
 
 	public int calcularDistanciaHorizontal(String posicion) {
@@ -94,6 +85,15 @@ public class HtmlUtils {
 			}
 		}
 		return distanciaVertical;
+	}
+
+	public String reemplazarImagenesEnHtml(String htmlContent, String imagenesHtml) {
+		return htmlContent.replace("<!-- insertar imagenes desde metodo de springboot -->", imagenesHtml);
+	}
+
+	public String agregarBootstrapCss(String htmlContent) {
+		String bootstrapCss = "<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css\"/>";
+		return htmlContent.replace("</head>", bootstrapCss + "</head>");
 	}
 
 	public List<String> generateButtons() {

@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "odontograma")
@@ -38,27 +36,21 @@ public class Odontograma {
 	private Odontologo odontologo;
 
 	@OneToMany(mappedBy = "odontograma", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DetalleDiente> detallesDientes = new ArrayList<>();
-	
+	private List<DetalleDiente> detallesDientes = new ArrayList<>();
+
 	@Column(name = "fecha_creacion")
 	private LocalDateTime fechaCreacion;
 
 	@Column(name = "ultima_modificacion")
 	private LocalDateTime ultimaModificacion;
 
-	@Column(name = "guardado_automatico")
-	private boolean guardadoAutomatico;
-
 	@Lob
-	@Column(name = "imagen_odontograma")
+	@Column(name = "imagen_odontograma", columnDefinition = "LONGBLOB")
 	private byte[] imagenOdontograma;
 
 	@Lob
 	@Column(name = "pdf_odontograma", columnDefinition = "LONGBLOB")
 	private byte[] pdfOdontograma;
-
-	@Column(name = "formato_imagen")
-	private String formatoImagen;
 
 	@Column(name = "comentarios_generales")
 	private String comentariosGenerales;
@@ -69,6 +61,14 @@ public class Odontograma {
 			"Diente Indicado a extracción", "Corona en mal estado", "Obturación en mal estado",
 			"Sellante de fosas y fisuras en mal estado", "Prótesis parcial fija en mal estado",
 			"Fractura de corona dental", "Caries dental");
+	
+	@PreRemove
+    public void eliminarDetallesDientes() {
+        for (DetalleDiente detalleDiente : detallesDientes) {
+            detalleDiente.setOdontograma(null);
+        }
+        detallesDientes.clear();
+    }
 
 	// Constructor, getters y setters
 
@@ -97,12 +97,12 @@ public class Odontograma {
 	}
 
 	public List<DetalleDiente> getDetallesDientes() {
-        return detallesDientes;
-    }
+		return detallesDientes;
+	}
 
-    public void setDetallesDientes(List<DetalleDiente> detallesDientes) {
-        this.detallesDientes = detallesDientes;
-    }
+	public void setDetallesDientes(List<DetalleDiente> detallesDientes) {
+		this.detallesDientes = detallesDientes;
+	}
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
@@ -120,28 +120,12 @@ public class Odontograma {
 		this.ultimaModificacion = ultimaModificacion;
 	}
 
-	public boolean isGuardadoAutomatico() {
-		return guardadoAutomatico;
-	}
-
-	public void setGuardadoAutomatico(boolean guardadoAutomatico) {
-		this.guardadoAutomatico = guardadoAutomatico;
-	}
-
 	public byte[] getImagenOdontograma() {
 		return imagenOdontograma;
 	}
 
 	public void setImagenOdontograma(byte[] imagenOdontograma) {
 		this.imagenOdontograma = imagenOdontograma;
-	}
-
-	public String getFormatoImagen() {
-		return formatoImagen;
-	}
-
-	public void setFormatoImagen(String formatoImagen) {
-		this.formatoImagen = formatoImagen;
 	}
 
 	public String getComentariosGenerales() {

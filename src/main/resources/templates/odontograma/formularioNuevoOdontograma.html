@@ -6,20 +6,22 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
 			integrity="sha384-vzO+BbZ+WlqoJzR2JgvXuhpKoLCFV9D2l2zx4Aiu0yOYkLzpvvoGJlZvAHV/pDv3" crossorigin="anonymous">
-		<link th:href="@{/css/odontograma.css}" rel="stylesheet">
-		<script defer src="/js/odontograma.js"></script>
+		<link th:href="@{/css/formularioCrearOdontograma.css}" rel="stylesheet">
+		<script defer src="/js/formularioCrearOdontograma.js"></script>
 	</head>
 
-	<body>
+	<body id="body">
 		<div class="container">
 			<h1 class="mt-5">Odontograma</h1>
 			<form method="POST" enctype="multipart/form-data" action="/odontograma/crear">
 				<!-- Selección del paciente -->
 				<div class="form-group">
 					<label for="paciente">Paciente:</label>
-					<select class="form-control" id="paciente" name="paciente">
+					<select class="form-control" id="paciente" name="paciente"
+						onchange="evaluarEdadPaciente(this.options[this.selectedIndex].dataset.fechaNacimiento)">
 						<option value="">Seleccione un paciente</option>
 						<option th:each="paciente : ${pacientes}" th:value="${paciente.id}"
+							th:data-fecha-nacimiento="${paciente.fechaNacimiento}"
 							th:text="${paciente.nombres + ' ' + paciente.apellidos}"></option>
 					</select>
 				</div>
@@ -41,12 +43,12 @@
 						<div class="col-md-12">
 							<div class="row">
 								<!-- Botones de izquierda superior -->
-								<div class="col-0" th:each="boton, iterStat : ${botones.subList(0, 8)}">
+								<div class="col-0 izquierda-superior" th:each="boton, iterStat : ${botones.subList(0, 8)}">
 									<button type="button" class="tooth" th:value="${'Izquierda superior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
 								<!-- Botones de derecha superior -->
-								<div class="col-0" th:each="boton, iterStat : ${botones.subList(8, 16)}">
+								<div class="col-0 derecha-superior" th:each="boton, iterStat : ${botones.subList(8, 16)}">
 									<button type="button" class="tooth" th:value="${'Derecha superior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
@@ -58,12 +60,12 @@
 						<div class="col-md-12">
 							<div class="row">
 								<!-- Botones de izquierda inferior -->
-								<div class="col-0" th:each="boton, iterStat : ${botones.subList(16, 24)}">
+								<div class="col-0 izquierda-inferior" th:each="boton, iterStat : ${botones.subList(16, 24)}">
 									<button type="button" class="tooth" th:value="${'Izquierda inferior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
 								<!-- Botones de derecha inferior -->
-								<div class="col-0" th:each="boton, iterStat : ${botones.subList(24, 32)}">
+								<div class="col-0 derecha-inferior" th:each="boton, iterStat : ${botones.subList(24, 32)}">
 									<button type="button" class="tooth" th:value="${'Derecha inferior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
@@ -114,7 +116,11 @@
 				<!-- Lista de dientes evaluados -->
 				<div id="dientesEvaluadosList"></div>
 
-
+				<!-- Add a field for general comments -->
+				<div class="form-group">
+					<label for="comentariosGenerales">Comentarios generales:</label>
+					<textarea class="form-control" id="comentariosGenerales" name="comentariosGenerales"></textarea>
+				</div>
 
 				<div class="row mt-4">
 					<div class="col-md-12">
