@@ -2,28 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 	<head>
-		<title>Odontograma</title>
+		<title>Editar Odontograma</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-			integrity="sha384-vzO+BbZ+WlqoJzR2JgvXuhpKoLCFV9D2l2zx4Aiu0yOYkLzpvvoGJlZvAHV/pDv3" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+			integrity="sha512-..." crossorigin="anonymous" />
 		<link th:href="@{/css/formularioCrearOdontograma.css}" rel="stylesheet">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
 		<script defer src="/js/formularioCrearOdontograma.js"></script>
 	</head>
 
 	<body id="body">
 		<div class="container">
-			<h1 class="mt-5">Odontograma</h1>
-			<form method="POST" enctype="multipart/form-data" action="/odontograma/crear">
+			<h1 class="mt-5">Editar Odontograma</h1>
+			<form method="POST" enctype="multipart/form-data"
+				th:action="@{/odontograma/update/{id}(id=${odontograma.id})}">
 				<!-- Selección del paciente -->
 				<div class="form-group">
 					<label for="paciente">Paciente:</label>
 					<select class="form-control" id="paciente" name="paciente"
-						onchange="evaluarEdadPaciente(this.options[this.selectedIndex].dataset.fechaNacimiento)">
-						<option value="">Seleccione un paciente</option>
+						onchange="evaluarEdadPaciente(this.options[this.selectedIndex].dataset.fechaNacimiento)" disabled>
+						<option value="" th:selected="${odontograma.paciente == null}">Seleccione un paciente</option>
 						<option th:each="paciente : ${pacientes}" th:value="${paciente.id}"
 							th:data-fecha-nacimiento="${paciente.fechaNacimiento}"
-							th:text="${paciente.nombres + ' ' + paciente.apellidos}"></option>
+							th:text="${paciente.nombres + ' ' + paciente.apellidos}"
+							th:selected="${odontograma.paciente != null && odontograma.paciente.id == paciente.id}">
+						</option>
 					</select>
 				</div>
 
@@ -31,9 +33,12 @@
 				<div class="form-group">
 					<label for="odontologo">Odontólogo:</label>
 					<select class="form-control" id="odontologo" name="odontologo">
-						<option value="">Seleccione un odontólogo</option>
+						<option value="" th:selected="${odontograma.odontologo == null}">Seleccione un odontólogo
+						</option>
 						<option th:each="odontologo : ${odontologos}" th:value="${odontologo.id}"
-							th:text="${odontologo.nombres + ' ' + odontologo.apellidos}"></option>
+							th:text="${odontologo.nombres + ' ' + odontologo.apellidos}"
+							th:selected="${odontograma.odontologo != null && odontograma.odontologo.id == odontologo.id}">
+						</option>
 					</select>
 				</div>
 
@@ -44,12 +49,14 @@
 						<div class="col-md-12">
 							<div class="row">
 								<!-- Botones de izquierda superior -->
-								<div class="col-0 izquierda-superior" th:each="boton, iterStat : ${botones.subList(0, 8)}">
+								<div class="col-0 izquierda-superior"
+									th:each="boton, iterStat : ${botones.subList(0, 8)}">
 									<button type="button" class="tooth" th:value="${'Izquierda superior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
 								<!-- Botones de derecha superior -->
-								<div class="col-0 derecha-superior" th:each="boton, iterStat : ${botones.subList(8, 16)}">
+								<div class="col-0 derecha-superior"
+									th:each="boton, iterStat : ${botones.subList(8, 16)}">
 									<button type="button" class="tooth" th:value="${'Derecha superior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
@@ -61,12 +68,14 @@
 						<div class="col-md-12">
 							<div class="row">
 								<!-- Botones de izquierda inferior -->
-								<div class="col-0 izquierda-inferior" th:each="boton, iterStat : ${botones.subList(16, 24)}">
+								<div class="col-0 izquierda-inferior"
+									th:each="boton, iterStat : ${botones.subList(16, 24)}">
 									<button type="button" class="tooth" th:value="${'Izquierda inferior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
 								<!-- Botones de derecha inferior -->
-								<div class="col-0 derecha-inferior" th:each="boton, iterStat : ${botones.subList(24, 32)}">
+								<div class="col-0 derecha-inferior"
+									th:each="boton, iterStat : ${botones.subList(24, 32)}">
 									<button type="button" class="tooth" th:value="${'Derecha inferior ' + boton}"
 										th:text="${boton}" onclick="procesarBoton(this)"></button>
 								</div>
@@ -115,17 +124,30 @@
 					dental antes de agregar.</div>
 
 				<!-- Lista de dientes evaluados -->
-				<div id="dientesEvaluadosList" class="list-group"></div>
+				<div id="dientesEvaluadosList">
+					<h3>Dientes evaluados:</h3>
+					<div class="list-group">
+						<div th:each="diente, iterStat : ${dientesEvaluados}"
+							class="list-group-item d-flex justify-content-between align-items-center">
+							<span th:text="${diente}"></span>
+							<button type="button" class="btn btn-danger btn-sm" th:attr="data-index=${iterStat.index}"
+								onclick="eliminarDienteEvaluado(this.getAttribute('data-index'))">
+								<i class="fas fa-trash-alt"></i>
+							</button>
+						</div>
+					</div>
+				</div>
 
-				<!-- Add a field for general comments -->
+				<!-- Comentarios generales -->
 				<div class="form-group">
 					<label for="comentariosGenerales">Comentarios generales:</label>
-					<textarea class="form-control" id="comentariosGenerales" name="comentariosGenerales"></textarea>
+					<textarea class="form-control" id="comentariosGenerales" name="comentariosGenerales"
+						th:text="${odontograma.comentariosGenerales}"></textarea>
 				</div>
 
 				<div class="row mt-4">
 					<div class="col-md-12">
-						<button type="submit" class="btn btn-primary">Guardar</button>
+						<button type="submit" class="btn btn-primary">Guardar cambios</button>
 						<a href="/odontograma/odontogramas" class="btn btn-outline-danger">Cancelar</a>
 					</div>
 				</div>

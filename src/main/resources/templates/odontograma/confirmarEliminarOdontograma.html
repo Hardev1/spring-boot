@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirmar Eliminación de Odontograma</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Eliminación de Odontograma</h1>
+        <p>Este odontograma está asociado a un paciente y un odontólogo. ¿Está seguro de que desea eliminar este odontograma? Esta acción no se puede deshacer.</p>
+
+        <form th:action="@{'/odontograma/delete/' + ${odontograma.id}}" method="post">
+            <button type="submit" class="btn btn-danger mr-2">Eliminar</button>
+            <a href="/odontograma/odontogramas" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -26,7 +26,7 @@ import com.example.demo.service.PdftoImageService;
 public class OdontogramaServiceImpl implements OdontogramaService {
 
 	@Autowired
-    private OdontogramaRepository odontogramaRepository;
+	private OdontogramaRepository odontogramaRepository;
 	private final PacienteRepository pacienteRepository;
 	private final OdontologoRepository odontologoRepository;
 	private final DetalleDienteRepository detalleDienteRepository;
@@ -43,35 +43,25 @@ public class OdontogramaServiceImpl implements OdontogramaService {
 		this.pdfServiceImpl = pdfServiceImpl;
 		this.pdftoImageService = pdftoImageService;
 	}
-	
-	@Override
-    public List<Odontograma> obtenerTodosLosOdontogramas() {
-        return odontogramaRepository.findAll();
-    }
-    
-    @Override
-    public Optional<Odontograma> obtenerOdontogramaPorId(Long id) {
-        return odontogramaRepository.findById(id);
-    }
 
 	@Override
 	public void crearOdontograma(String[] dientesEvaluados, String comentariosGenerales, int pacienteId,
-	        int odontologoId, Map<String, String> notasDientesParams, List<String> botonesVisibles) throws IOException {
-	    Paciente paciente = obtenerPaciente(pacienteId);
-	    Odontologo odontologo = obtenerOdontologo(odontologoId);
-	    LocalDateTime fechaActual = LocalDateTime.now();
+			int odontologoId, Map<String, String> notasDientesParams, List<String> botonesVisibles) throws IOException {
+		Paciente paciente = obtenerPaciente(pacienteId);
+		Odontologo odontologo = obtenerOdontologo(odontologoId);
+		LocalDateTime fechaActual = LocalDateTime.now();
 
-	    List<String> notasDientes = guardarDetallesDientes(dientesEvaluados, notasDientesParams);
+		List<String> notasDientes = guardarDetallesDientes(dientesEvaluados, notasDientesParams);
 
-	    byte[] pdfBytes = pdfServiceImpl.generarPdfToByteArray(dientesEvaluados, paciente, odontologo, fechaActual,
-	            comentariosGenerales, botonesVisibles, notasDientes);
-	    byte[] imageBytes = convertPdfToImage(pdfBytes);
+		byte[] pdfBytes = pdfServiceImpl.generarPdfToByteArray(dientesEvaluados, paciente, odontologo, fechaActual,
+				comentariosGenerales, botonesVisibles, notasDientes);
+		byte[] imageBytes = convertPdfToImage(pdfBytes);
 
-	    Odontograma odontograma = crearOdontograma(paciente, odontologo, fechaActual, comentariosGenerales, pdfBytes,
-	            imageBytes);
-	    odontogramaRepository.save(odontograma);
+		Odontograma odontograma = crearOdontograma(paciente, odontologo, fechaActual, comentariosGenerales, pdfBytes,
+				imageBytes);
+		odontogramaRepository.save(odontograma);
 
-	    guardarDetallesDientes(dientesEvaluados, odontograma, notasDientesParams, notasDientes);
+		guardarDetallesDientes(dientesEvaluados, odontograma, notasDientesParams, notasDientes);
 	}
 
 	private Paciente obtenerPaciente(int pacienteId) {
@@ -96,39 +86,79 @@ public class OdontogramaServiceImpl implements OdontogramaService {
 	}
 
 	private List<String> guardarDetallesDientes(String[] dientesEvaluados, Map<String, String> notasDientesParams) {
-	    List<String> notasDientes = new ArrayList<>();
-	    for (String diente : dientesEvaluados) {
-	        DetalleDiente detalleDiente = createDetalleDiente(diente);
-	        if (detalleDiente.getNota()!= null &&!detalleDiente.getNota().isEmpty()) {
-	            notasDientes.add(detalleDiente.getNota());
-	        }
-	    }
-	    return notasDientes;
+		List<String> notasDientes = new ArrayList<>();
+		for (String diente : dientesEvaluados) {
+			DetalleDiente detalleDiente = createDetalleDiente(diente);
+			if (detalleDiente.getNota() != null && !detalleDiente.getNota().isEmpty()) {
+				notasDientes.add(detalleDiente.getNota());
+			}
+		}
+		return notasDientes;
 	}
 
-	private void guardarDetallesDientes(String[] dientesEvaluados, Odontograma odontograma, Map<String, String> notasDientesParams, List<String> notasDientes) {
-	    for (String diente : dientesEvaluados) {
-	        DetalleDiente detalleDiente = createDetalleDiente(diente);
-	        detalleDiente.setOdontograma(odontograma);
-	        detalleDienteRepository.save(detalleDiente);
-	    }
+	private void guardarDetallesDientes(String[] dientesEvaluados, Odontograma odontograma,
+			Map<String, String> notasDientesParams, List<String> notasDientes) {
+		for (String diente : dientesEvaluados) {
+			DetalleDiente detalleDiente = createDetalleDiente(diente);
+			detalleDiente.setOdontograma(odontograma);
+			detalleDienteRepository.save(detalleDiente);
+		}
 	}
 
 	private DetalleDiente createDetalleDiente(String diente) {
-	    String[] partes = diente.split(" - ");
-	    String numeroDienteString = partes[0];
-	    String estadoDental = partes[1];
-	    String notaDiente = extractNotaDiente(diente);
+		String[] partes = diente.split(" - ");
+		String numeroDienteString = partes[0];
+		String estadoDental = partes[1];
+		String notaDiente = extractNotaDiente(diente);
 
-	    DetalleDiente detalleDiente = new DetalleDiente();
-	    detalleDiente.setPosicionDiente(numeroDienteString);
-	    detalleDiente.setEstado(estadoDental);
-	    detalleDiente.setNota(notaDiente);
-	    return detalleDiente;
+		DetalleDiente detalleDiente = new DetalleDiente();
+		detalleDiente.setPosicionDiente(numeroDienteString);
+		detalleDiente.setEstado(estadoDental);
+		detalleDiente.setNota(notaDiente);
+		return detalleDiente;
 	}
 
 	private String extractNotaDiente(String diente) {
 		String[] parteNota = diente.split(" - Nota: ");
 		return parteNota.length > 1 ? parteNota[1] : "";
 	}
+
+	@Override
+	public void eliminarOdontograma(Long id) {
+		Optional<Odontograma> odontogramaOptional = odontogramaRepository.findById(id);
+		if (odontogramaOptional.isPresent()) {
+			odontogramaRepository.delete(odontogramaOptional.get());
+		} else {
+			throw new IllegalArgumentException("El odontograma con ID " + id + " no existe.");
+		}
+	}
+	
+	@Override
+	public void actualizarOdontograma(Odontograma odontograma, String[] dientesEvaluados, String comentariosGenerales,
+			int pacienteId, int odontologoId, Map<String, String> notasDientesParams, List<String> botonesVisibles)
+			throws IOException {
+
+		Paciente paciente = obtenerPaciente(pacienteId);
+		Odontologo odontologo = obtenerOdontologo(odontologoId);
+		LocalDateTime fechaActual = LocalDateTime.now();
+
+		List<String> notasDientes = guardarDetallesDientes(dientesEvaluados, notasDientesParams);
+
+		byte[] pdfBytes = pdfServiceImpl.generarPdfToByteArray(dientesEvaluados, paciente, odontologo, fechaActual,
+				comentariosGenerales, botonesVisibles, notasDientes);
+		byte[] imageBytes = convertPdfToImage(pdfBytes);
+
+		odontograma.setPaciente(paciente);
+		odontograma.setOdontologo(odontologo);
+		odontograma.setFechaCreacion(odontograma.getFechaCreacion());
+		odontograma.setUltimaModificacion(fechaActual);
+		odontograma.setComentariosGenerales(comentariosGenerales);
+		odontograma.setPdfOdontograma(pdfBytes);
+		odontograma.setImagenOdontograma(imageBytes);
+
+		odontogramaRepository.save(odontograma);
+
+		guardarDetallesDientes(dientesEvaluados, odontograma, notasDientesParams, notasDientes);
+	}
+
 }

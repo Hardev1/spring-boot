@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OdontogramaRepository extends JpaRepository<Odontograma, Long> {
     // Aquí puedes agregar métodos personalizados de consulta si es necesario
+	Odontograma getById(Long id);
+	
 }

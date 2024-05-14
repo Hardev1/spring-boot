@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Odontogramas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Odontogramas</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Paciente</th>
+                    <th>Odontólogo</th>
+                    <th>Fecha de Creación</th>
+                    <th>Última Modificación</th>
+                    <th>Comentarios Generales</th>
+                    <th>Imagen</th>
+                    <th>PDF</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="odontograma : ${odontogramas}">
+                    <td th:text="${odontograma.id}"></td>
+                    <td th:text="${odontograma.paciente.nombres}"></td>
+                    <td th:text="${odontograma.odontologo.nombres}"></td>
+                    <td th:text="${#temporals.format(odontograma.fechaCreacion, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(odontograma.fechaCreacion, 'h:mm a')}"></td>
+                    <td th:text="${#temporals.format(odontograma.ultimaModificacion, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(odontograma.ultimaModificacion, 'h:mm a')}"></td>
+                    <td th:text="${odontograma.comentariosGenerales}"></td>
+                    <td>
+                        <a th:href="@{'/odontograma/' + ${odontograma.id} + '/imagen'}">Descargar Imagen</a>
+                    </td>
+                    <td>
+                        <a th:href="@{'/odontograma/' + ${odontograma.id} + '/pdf'}">Descargar PDF</a>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/odontograma/delete/' + ${odontograma.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/odontograma/update/' + ${odontograma.id}}" method="get">
+                                <button type="submit" class="btn btn-success">Actualizar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/odontograma/new_frontend'">Nuevo Odontograma</button>
+    </div>
+</body>
+</html>

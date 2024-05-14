@@ -7,21 +7,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 @Table(name = "odontograma")
 public class Odontograma {
-
-	public byte[] getPdfOdontograma() {
-		return pdfOdontograma;
-	}
-
-	public void setPdfOdontograma(byte[] pdfOdontograma) {
-		this.pdfOdontograma = pdfOdontograma;
-	}
-
-	public static List<String> getListaestadosdentales() {
-		return listaEstadosDentales;
-	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +28,7 @@ public class Odontograma {
 	private Odontologo odontologo;
 
 	@OneToMany(mappedBy = "odontograma", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Fetch(FetchMode.SUBSELECT)
 	private List<DetalleDiente> detallesDientes = new ArrayList<>();
 
 	@Column(name = "fecha_creacion")
@@ -123,6 +116,18 @@ public class Odontograma {
 	public byte[] getImagenOdontograma() {
 		return imagenOdontograma;
 	}
+	
+	public byte[] getPdfOdontograma() {
+		return pdfOdontograma;
+	}
+	
+	public void setPdfOdontograma(byte[] pdfOdontograma) {
+		this.pdfOdontograma = pdfOdontograma;
+	}
+
+	public static List<String> getListaestadosdentales() {
+		return listaEstadosDentales;
+	}
 
 	public void setImagenOdontograma(byte[] imagenOdontograma) {
 		this.imagenOdontograma = imagenOdontograma;
@@ -134,41 +139,5 @@ public class Odontograma {
 
 	public void setComentariosGenerales(String comentariosGenerales) {
 		this.comentariosGenerales = comentariosGenerales;
-	}
-
-	public void exportarOdontograma(String formato) {
-		ExportadorOdontograma exportador = ObtenerExportador(formato);
-		if (exportador != null) {
-			exportador.exportar(this);
-		} else {
-			// Lógica para manejar formatos no soportados
-		}
-	}
-
-	private ExportadorOdontograma ObtenerExportador(String formato) {
-		if (formato.equalsIgnoreCase("PDF")) {
-			return new ExportadorPDF();
-		} else if (formato.equalsIgnoreCase("imagen")) {
-			return new ExportadorImagen();
-		}
-		return null;
-	}
-}
-
-interface ExportadorOdontograma {
-	void exportar(Odontograma odontograma);
-}
-
-class ExportadorPDF implements ExportadorOdontograma {
-	@Override
-	public void exportar(Odontograma odontograma) {
-		// Lógica para exportar el odontograma a PDF
-	}
-}
-
-class ExportadorImagen implements ExportadorOdontograma {
-	@Override
-	public void exportar(Odontograma odontograma) {
-		// Lógica para exportar el odontograma a imagen
 	}
 }

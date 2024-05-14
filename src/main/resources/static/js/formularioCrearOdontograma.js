@@ -14,6 +14,15 @@ const pacientesData = {};
 nuevoButton.style.display = 'none';
 nuevoButton.disabled = true;
 
+document.addEventListener('DOMContentLoaded', function() {
+    const pacienteSelect = document.getElementById('paciente');
+    const opcionSeleccionada = pacienteSelect.options[pacienteSelect.selectedIndex];
+    const fechaNacimientoString = opcionSeleccionada.dataset.fechaNacimiento.toString();
+	if (fechaNacimientoString) {
+        evaluarEdadPaciente(fechaNacimientoString);
+    }
+});
+
 function obtenerBotonesVisibles(edad) {
     const botones = document.querySelectorAll('.tooth');
     const botonesVisibles = [];
@@ -41,7 +50,6 @@ function obtenerBotonesVisibles(edad) {
 
 function evaluarEdadPaciente(fechaNacimiento) {
     const edad = calcularEdad(fechaNacimiento);
-
     let botonesVisibles = [];
     botonesVisibles = obtenerBotonesVisibles(edad);
 
@@ -54,24 +62,33 @@ function evaluarEdadPaciente(fechaNacimiento) {
         }
     });
 
-    // Obtener el ID del paciente seleccionado
-    const pacienteId = document.getElementById('paciente').value;
+    // Obtener la lista de dientes evaluados desde el DOM
+    const dientesEvaluadosListContainer = document.getElementById('dientesEvaluadosList');
+    const listaContainer = dientesEvaluadosListContainer.querySelector('.list-group');
 
-    // Cargar los datos del paciente desde el objeto pacientesData
-    if (pacientesData[pacienteId]) {
-        const dientesEvaluados = pacientesData[pacienteId].dientesEvaluados;
-        // Mostrar los dientes evaluados en la lista
-        const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
-        dientesEvaluadosList.innerHTML = '';
+    // Si ya existe la lista de dientes evaluados, no hacer nada
+    if (listaContainer && listaContainer.childElementCount > 0) {
+        return;
+    }
+
+    // Crear la lista de dientes evaluados
+    const dientesEvaluados = Array.from(document.querySelectorAll('[th\\:text]')).map(elem => elem.textContent);
+
+    if (dientesEvaluados.length > 0) {
+        if (!listaContainer) {
+            const newListaContainer = document.createElement('div');
+            newListaContainer.classList.add('list-group');
+            dientesEvaluadosListContainer.appendChild(newListaContainer);
+        }
+
         dientesEvaluados.forEach(dienteEvaluado => {
-            const li = document.createElement('li');
-            li.textContent = `${dienteEvaluado.nombre} - ${dienteEvaluado.estadoDental} - ${dienteEvaluado.nota}`;
-            dientesEvaluadosList.appendChild(li);
+            const li = document.createElement('div');
+            li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+            li.innerHTML = `
+                <span>${dienteEvaluado}</span>
+            `;
+            listaContainer.appendChild(li);
         });
-    } else {
-        // Limpiar la lista de dientes evaluados
-        const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
-        dientesEvaluadosList.innerHTML = '';
     }
 }
 
@@ -192,9 +209,21 @@ function agregarDienteEvaluado() {
         pacientesData[pacienteId].dientesEvaluados.push(nuevoDienteEvaluado);
 
         const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
-        const nuevoItem = document.createElement('li');
-        nuevoItem.textContent = `${nuevoDienteEvaluado.nombre} - ${nuevoDienteEvaluado.estadoDental} - ${nuevoDienteEvaluado.nota}`;
-        dientesEvaluadosList.appendChild(nuevoItem);
+        const nuevoItem = document.createElement('div');
+		nuevoItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+		
+		const itemTexto = document.createElement('span');
+		itemTexto.textContent = `${nuevoDienteEvaluado.nombre} - ${nuevoDienteEvaluado.estadoDental} - ${nuevoDienteEvaluado.nota}`;
+		
+		const eliminarBtn = document.createElement('button');
+		eliminarBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+		eliminarBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+		eliminarBtn.addEventListener('click', () => eliminarDienteEvaluado(pacienteId, nuevoDienteEvaluado));
+		
+		nuevoItem.appendChild(itemTexto);
+		nuevoItem.appendChild(eliminarBtn);
+		
+		dientesEvaluadosList.appendChild(nuevoItem);
 
         // Actualizar el campo oculto con los dientes evaluados
         actualizarCampoOculto();
@@ -233,7 +262,18 @@ function limpiarCampos() {
   ocultarNuevoButton();
 }
 
+function eliminarDienteEvaluado(pacienteId, dienteEvaluado) {
+    const dientesEvaluadosList = document.getElementById('dientesEvaluadosList');
+    const dientesEvaluados = pacientesData[pacienteId].dientesEvaluados;
 
+    const index = dientesEvaluados.findIndex(item => item.nombre === dienteEvaluado.nombre && item.estadoDental === dienteEvaluado.estadoDental && item.nota === dienteEvaluado.nota);
+
+    if (index !== -1) {
+        dientesEvaluados.splice(index, 1);
+        dientesEvaluadosList.removeChild(dientesEvaluadosList.children[index]);
+        actualizarCampoOculto();
+    }
+}
 
 function ocultarDienteSeleccionado() {
 	document.getElementById('dienteSeleccionadoText').style.display = 'none';
