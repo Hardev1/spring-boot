@@ -7,8 +7,11 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.PacienteRepository;
 import com.example.demo.repository.TratamientoRepository;
+import com.example.demo.security.CustomUserDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+
+import java.security.Principal;
 import java.util.ArrayList;
 
 @Controller
@@ -34,7 +39,16 @@ public class PacienteController {
         this.tratamientoRepository = tratamientoRepository;
         this.citaRepository = citaRepository;
     }
+    
+    @ModelAttribute("usuarioAutenticado")
+    public CustomUserDetails getUserDetails(Principal principal) {
+        if (principal != null) {
+            return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
+        return null;
+    }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @PostMapping("/new")
     public @ResponseBody String nuevo(@RequestParam String nombres,
                                        @RequestParam String apellidos,
@@ -55,11 +69,13 @@ public class PacienteController {
         return "Listo";
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @GetMapping("/new_frontend")
     public String mostrarFormularioNuevo() {
         return "paciente/formularioNuevoPaciente";
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @PostMapping("/new_frontend")
     public String nuevo(@Valid Paciente paciente, Model model) {
         // Verificar si ya existe un paciente con el mismo ID
@@ -76,11 +92,13 @@ public class PacienteController {
         return "paciente/respuestaCreacionPaciente";
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @GetMapping("/all")
     public @ResponseBody Iterable<Paciente> listarTodos() {
         return pacienteRepository.findAll();
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @GetMapping("/all_frontend")
     public String listarTodos_frontend(Model model) {
         ArrayList<Paciente> lista = (ArrayList<Paciente>) pacienteRepository.findAll();
@@ -88,12 +106,14 @@ public class PacienteController {
         return "paciente/listadoPacientes";
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @GetMapping("/find")
     public @ResponseBody Paciente buscarId(@RequestParam int id) {
         return pacienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Paciente no encontrado con el ID: " + id));
     }
     
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @CrossOrigin
     @GetMapping(path = "/update/{id}")
     public String editarViewPaciente(Model model, @PathVariable("id") int id) {
@@ -104,6 +124,7 @@ public class PacienteController {
         return "paciente/formularioActualizarPaciente";
     }
 
+    @PreAuthorize("hasAnyRole('ODONTOLOGO', 'AUXILIAR')")
     @PostMapping("/updateDB/{id}")
     public String actualizarPaciente(@PathVariable("id") int id, @ModelAttribute Paciente paciente,
                                      BindingResult result, RedirectAttributes redirectAttributes) {
@@ -119,6 +140,7 @@ public class PacienteController {
         return "redirect:/pacientes/all_frontend";
     }
 
+    @PreAuthorize("hasRole('ODONTOLOGO')")
     @GetMapping("/delete/{id}")
     public String mostrarConfirmacionEliminar(@PathVariable int id, Model model) {
         Paciente paciente = pacienteRepository.findById(id)
@@ -127,6 +149,7 @@ public class PacienteController {
         return "paciente/confirmarEliminarPaciente"; 
     }
 
+    @PreAuthorize("hasRole('ODONTOLOGO')")
     @PostMapping("/delete/{id}")
     public String eliminar(@PathVariable int id) {
         // Obtener todos los tratamientos asociados al paciente

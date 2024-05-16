@@ -12,12 +12,29 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
+	private String nombre;
     private String correoElectronico;
-
+    private String clave;
     @ManyToOne
     private Perfil perfil;
+    
+    public Usuario() {
+	}
 
+    public Usuario(String correoElectronico, String clave, Perfil perfil) {
+    	this.nombre = correoElectronico;
+		this.clave = clave;
+		this.perfil = perfil;
+	}
+
+    public String getClave() {
+		return clave;
+	}
+
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
+	
 	public Long getId() {
 		return id;
 	}

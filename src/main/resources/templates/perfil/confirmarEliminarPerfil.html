@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirmar Eliminación de Perfil</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Eliminación de Perfil</h1>
+        <p>¿Está seguro de que desea eliminar este perfil? Esta acción no se puede deshacer.</p>
+        <form th:action="@{'/perfiles/delete/' + ${perfil.id}}" method="post">
+            <button type="submit" class="btn btn-danger mr-2">Eliminar</button>
+            <a href="/perfiles/all" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

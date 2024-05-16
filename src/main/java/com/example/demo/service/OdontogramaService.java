@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.example.demo.entity.Odontograma;
 

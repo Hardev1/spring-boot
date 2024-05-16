@@ -7,13 +7,18 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.CitaRepository;
 import com.example.demo.repository.OdontologoRepository;
 import com.example.demo.repository.PacienteRepository;
+import com.example.demo.security.CustomUserDetails;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -31,6 +36,23 @@ public class CitaController {
     @Autowired
     private OdontologoRepository odontologoRepository; // Inyectar el repositorio OdontologoRepository
 
+    @ModelAttribute("usuarioAutenticado")
+    public CustomUserDetails getUserDetails(Principal principal) {
+        if (principal != null) {
+            return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
+        return null;
+    }
+    
+    @PreAuthorize("hasRole('AUXILIAR')")
+    @GetMapping("/all_frontend")
+    public String listarTodos(Model model) {
+        List<Cita> citas = citaRepository.findAll();
+        model.addAttribute("citas", citas);
+        return "cita/listadoCitas";
+    }
+
+    @PreAuthorize("hasRole('AUXILIAR')")
     @GetMapping("/new_frontend")
     public String mostrarFormularioNuevo(Model model) {
         List<Paciente> pacientes = pacienteRepository.findAll();
@@ -41,24 +63,7 @@ public class CitaController {
         return "cita/formularioNuevaCita";
     }
 
-    @GetMapping("/find")
-    public @ResponseBody Cita buscarId(@RequestParam int id) {
-        return citaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Cita no encontrada con el ID: " + id));
-    }
-
-    @GetMapping("/all_frontend")
-    public String listarTodos(Model model) {
-        List<Cita> citas = citaRepository.findAll();
-        model.addAttribute("citas", citas);
-        return "cita/listadoCitas";
-    }
-
-    @GetMapping("/all")
-    public @ResponseBody Iterable<Cita> listarTodos() {
-        return citaRepository.findAll();
-    }
-
+    @PreAuthorize("hasRole('AUXILIAR')")
     @PostMapping("/new_frontend")
     public String nueva(@RequestParam int pacienteId,
                         @RequestParam LocalDateTime fechaHora,
@@ -83,6 +88,7 @@ public class CitaController {
         return "redirect:/cita/all_frontend";
     }
 
+    @PreAuthorize("hasRole('AUXILIAR')")
     @CrossOrigin
     @GetMapping(path = "/update/{id}")
     public String editarViewCita(Model model, @PathVariable("id") int id) {
@@ -97,6 +103,7 @@ public class CitaController {
         return "cita/formularioActualizarCita";
     }
 
+    @PreAuthorize("hasRole('AUXILIAR')")
     @PostMapping("/update/{id}")
     public String actualizarCita(@PathVariable("id") int id, @ModelAttribute Cita cita,
                                  BindingResult result, RedirectAttributes redirectAttributes) {
@@ -124,6 +131,7 @@ public class CitaController {
         return "redirect:/cita/all_frontend";
     }
 
+    @PreAuthorize("hasRole('AUXILIAR')")
     @GetMapping("/delete/{id}")
     public String mostrarConfirmacionEliminarCita(@PathVariable int id, Model model) {
         Cita cita = citaRepository.findById(id)
@@ -132,6 +140,7 @@ public class CitaController {
         return "cita/confirmarEliminarCita";
     }
 
+    @PreAuthorize("hasRole('AUXILIAR')")
     @PostMapping("/delete/{id}")
     public String eliminarCita(@PathVariable int id) {
         citaRepository.deleteById(id);
