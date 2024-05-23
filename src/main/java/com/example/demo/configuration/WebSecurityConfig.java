@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.security.JWTAuthenticationFilter;
 import com.example.demo.security.JwtAuthEntryPoint;
@@ -42,19 +44,20 @@ public class WebSecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(requests -> requests
-                .requestMatchers("/", "/hello", "/auth/register", "/auth/login").permitAll()
+                .requestMatchers("/", "/hello", "/auth/register", "/auth/login", "/odontograma/**").permitAll()
+                .requestMatchers("/js/**", "/css/**", "/img/**").permitAll()
                 .requestMatchers("/usuario/**").hasRole("ADMIN")
                 .requestMatchers("/perfiles/**").hasRole("ADMIN")
                 .requestMatchers("/cita/**").hasRole("AUXILIAR")
                 .requestMatchers("/odontologo/**").hasRole("ODONTOLOGO")
                 .requestMatchers("/pacientes/**").hasAnyRole("PACIENTE", "ODONTOLOGO")
                 .requestMatchers("/tratamiento/**").hasAnyRole("PACIENTE", "ODONTOLOGO")
-                .anyRequest().denyAll()
+                //.anyRequest().denyAll()
             )
             //.formLogin((form) -> form.loginPage("/login").permitAll())
-            .logout(logout -> logout.permitAll())
-            .exceptionHandling(exceptions -> exceptions.accessDeniedPage("/login"))
-            .userDetailsService(userDetailsService);
+            .logout(logout -> logout.permitAll());
+            //.exceptionHandling(exceptions -> exceptions.accessDeniedPage("/login"))
+            //.userDetailsService(userDetailsService);
         
 
         return http.build();
