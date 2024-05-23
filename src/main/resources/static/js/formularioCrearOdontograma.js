@@ -16,12 +16,25 @@ nuevoButton.disabled = true;
 
 document.addEventListener('DOMContentLoaded', function() {
     const pacienteSelect = document.getElementById('paciente');
-    const opcionSeleccionada = pacienteSelect.options[pacienteSelect.selectedIndex];
-    const fechaNacimientoString = opcionSeleccionada.dataset.fechaNacimiento.toString();
-	if (fechaNacimientoString) {
-        evaluarEdadPaciente(fechaNacimientoString);
+
+    // Verificar si el elemento existe y si tiene opciones seleccionadas
+    if (pacienteSelect && pacienteSelect.options.length > 0) {
+        const opcionSeleccionada = pacienteSelect.options[pacienteSelect.selectedIndex];
+
+        // Verificar si la opción seleccionada tiene el atributo `data-fecha-nacimiento`
+        if (opcionSeleccionada && opcionSeleccionada.dataset.fechaNacimiento) {
+            const fechaNacimientoString = opcionSeleccionada.dataset.fechaNacimiento.toString();
+            if (fechaNacimientoString) {
+                evaluarEdadPaciente(fechaNacimientoString);
+            }
+        } else {
+            console.warn("La opción seleccionada no tiene el atributo `data-fecha-nacimiento`.");
+        }
+    } else {
+        console.warn("No hay opciones disponibles en el select de paciente.");
     }
 });
+
 
 function obtenerBotonesVisibles(edad) {
     const botones = document.querySelectorAll('.tooth');
@@ -94,7 +107,6 @@ function evaluarEdadPaciente(fechaNacimiento) {
 
 function calcularEdad(fechaNacimientoString) {
   const [anioNac, mesNac, diaNac] = fechaNacimientoString.split('-').map(Number);
-  const fechaNac = new Date(anioNac, mesNac - 1, diaNac);
   const fechaActual = new Date();
   const anioActual = fechaActual.getFullYear();
   const mesActual = fechaActual.getMonth();
@@ -192,13 +204,14 @@ function agregarDienteEvaluado() {
         let notaDiente = '';
         if (notaDienteTexto) {
             notaDiente = notaDienteTexto.value.trim();
-        }
+        }  
 
         const nuevoDienteEvaluado = {
             nombre: dienteSeleccionado,
             estadoDental: estadoDentalValue,
             nota: notaDiente ? `Nota: ${notaDiente}` : 'Nota: Sin notas adicionales'
         };
+        
 
         // Agregar el diente evaluado al objeto pacientesData
         if (!pacientesData[pacienteId]) {
@@ -237,16 +250,16 @@ function agregarDienteEvaluado() {
 }
 
 function actualizarCampoOculto() {
-  const dientesEvaluadosInput = document.getElementById('dientesEvaluados');
-  const dientesEvaluadosListItems = document.querySelectorAll('#dientesEvaluadosList li');
+    const dientesEvaluadosInput = document.getElementById('dientesEvaluados');
+    const dientesEvaluadosListItems = document.querySelectorAll('#dientesEvaluadosList .list-group-item');
 
-  const dientesEvaluados = Array.from(dientesEvaluadosListItems).map(item => {
-    const dienteInfo = item.textContent.trim();
-
-    return `${dienteInfo}`; // Incluir la nota si está presente
-  }).join(',');
-
-  dientesEvaluadosInput.value = dientesEvaluados;
+    const dientesEvaluados = Array.from(dientesEvaluadosListItems).map(item => {
+        const dienteInfo = item.querySelector('span').textContent.trim();
+        return `${dienteInfo}`;
+    }).join(',');
+    
+    dientesEvaluadosInput.value = dientesEvaluados;
+    console.log("Campo oculto actualizado:", dientesEvaluadosInput.value);
 }
 
 function limpiarCampos() {
@@ -314,6 +327,7 @@ formulario.addEventListener('submit', function(event) {
 		errorMessage.textContent = 'Por favor, seleccione un paciente, un odontólogo y al menos un diente evaluado antes de guardar.';
 	} else {
 		// Obtener la fecha de nacimiento del paciente seleccionado
+	actualizarCampoOculto();
     const pacienteSelect = document.getElementById('paciente');
     const pacienteSeleccionado = pacienteSelect.options[pacienteSelect.selectedIndex];
     const fechaNacimiento = pacienteSeleccionado.dataset.fechaNacimiento;
@@ -321,5 +335,6 @@ formulario.addEventListener('submit', function(event) {
 
     // Agregar los botones visibles al formulario
     agregarBotonesVisiblesAlFormulario(edad);
+    formulario.submit();
 	}
 });

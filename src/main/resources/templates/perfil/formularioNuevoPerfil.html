@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nuevo Perfil</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Nuevo Perfil</h1>
+        <form th:action="@{/perfiles/new}" th:object="${perfil}" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="/perfiles/all" class="btn btn-outline-danger">Volver al Listado</a>
+        </form>
+    </div>
+</body>
+</html>

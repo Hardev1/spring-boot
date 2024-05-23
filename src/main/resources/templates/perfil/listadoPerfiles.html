@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista de Perfiles</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Perfiles</h1>
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="perfil : ${perfiles}">
+                    <td th:text="${perfil.id}"></td>
+                    <td th:text="${perfil.nombre}"></td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <form th:action="@{'/perfiles/delete/' + ${perfil.id}}" method="get">
+                                <button type="submit" class="btn btn-danger">Borrar</button>
+                            </form>
+                            <form th:action="@{'/perfiles/edit/' + ${perfil.id}}" method="get">
+                                <button type="submit" class="btn btn-success">Editar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" onclick="location.href='/perfiles/new'">Nuevo perfil</button>
+    </div>
+</body>
+</html>

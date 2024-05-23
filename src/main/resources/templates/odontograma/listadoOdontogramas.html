@@ -24,8 +24,8 @@
             <tbody>
                 <tr th:each="odontograma : ${odontogramas}">
                     <td th:text="${odontograma.id}"></td>
-                    <td th:text="${odontograma.paciente.nombres}"></td>
-                    <td th:text="${odontograma.odontologo.nombres}"></td>
+                    <td th:text="${odontograma.paciente.nombres} + ' ' + ${odontograma.paciente.apellidos}"></td>
+                    <td th:text="${odontograma.odontologo.nombres} + ' ' + ${odontograma.odontologo.apellidos} "></td>
                     <td th:text="${#temporals.format(odontograma.fechaCreacion, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(odontograma.fechaCreacion, 'h:mm a')}"></td>
                     <td th:text="${#temporals.format(odontograma.ultimaModificacion, 'yyyy-MM-dd')} + ' a las ' + ${#temporals.format(odontograma.ultimaModificacion, 'h:mm a')}"></td>
                     <td th:text="${odontograma.comentariosGenerales}"></td>

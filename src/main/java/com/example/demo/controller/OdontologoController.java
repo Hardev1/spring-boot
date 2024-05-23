@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.entity.Odontologo;
 import com.example.demo.repository.OdontologoRepository;
+import com.example.demo.security.CustomUserDetails;
 
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +32,15 @@ public class OdontologoController {
 	@Autowired
 	private OdontologoRepository odontologoRepository;
 	
+	@ModelAttribute("usuarioAutenticado")
+    public CustomUserDetails getUserDetails(Principal principal) {
+        if (principal != null) {
+            return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        }
+        return null;
+    }
+	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping(path="/new")
 	public @ResponseBody String nuevo(@RequestParam String nombres, 
 			@RequestParam String apellidos, 
@@ -45,11 +58,13 @@ public class OdontologoController {
 		return "Listo";
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/new_frontend")
     public String mostrarFormularioNuevo() {
         return "odontologo/formularioNuevoOdontologo"; 
     }
     
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/new_frontend")
     public String nuevo(@RequestParam String nombres,
                         @RequestParam String apellidos,
@@ -70,11 +85,13 @@ public class OdontologoController {
         return "odontologo/respuestaCreacionOdontologo"; 
     }
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(path="/all")
 	public @ResponseBody Iterable <Odontologo> listarTodos(){
 		return odontologoRepository.findAll();
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(path="/all_frontend")
 	public String listarTodos_frontend(Model modelo){
 		ArrayList<Odontologo> lista = (ArrayList<Odontologo>) odontologoRepository.findAll();
@@ -82,11 +99,13 @@ public class OdontologoController {
 		return "odontologo/listadoOdontologos";
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping(path="/find")
 	public @ResponseBody Odontologo buscarId(@RequestParam int id){
 		return odontologoRepository.findById(id).get();
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@CrossOrigin
     @GetMapping(path = "/update/{id}")
     public String editarView(Model model, @PathVariable("id") int id) {
@@ -97,6 +116,7 @@ public class OdontologoController {
         return "odontologo/formularioActualizarOdontologo";
     }
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/updateDB/{id}")
 	public String actualizar(@PathVariable("id") int id, @ModelAttribute Odontologo odontologo,
 	                          BindingResult result, RedirectAttributes redirectAttributes) {
@@ -112,6 +132,7 @@ public class OdontologoController {
 	    return "redirect:/odontologo/all_frontend";
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/delete/{id}")
     public String mostrarConfirmacionEliminar(@PathVariable int id, Model model) {
         Odontologo odontologo = odontologoRepository.findById(id).get();
@@ -119,6 +140,7 @@ public class OdontologoController {
         return "odontologo/confirmarEliminarOdontologo"; 
     }
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/delete/{id}")
     public String eliminar(@PathVariable int id) {
         odontologoRepository.deleteById(id);

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -73,13 +74,22 @@ public class OdontogramaController extends HtmlUtils {
 
 	@PostMapping("/crear")
 	public String crearOdontograma(HttpServletResponse response,
-			@RequestParam("dientesEvaluados") String[] dientesEvaluados,
-			@RequestParam("comentariosGenerales") String comentariosGenerales, @RequestParam("paciente") int pacienteId,
-			@RequestParam("odontologo") int odontologoId, @RequestParam Map<String, String> notasDientesParams,
-			@RequestParam("botonesVisibles[]") List<String> botonesVisibles) throws IOException {
-		 odontogramaService.crearOdontograma(dientesEvaluados, comentariosGenerales,
-		 pacienteId, odontologoId, notasDientesParams, botonesVisibles);
-		 return "redirect:/odontograma/odontogramas";
+	        @RequestParam("dientesEvaluados") String[] dientesEvaluados,
+	        @RequestParam("comentariosGenerales") String comentariosGenerales, 
+	        @RequestParam("paciente") int pacienteId,
+	        @RequestParam("odontologo") int odontologoId, 
+	        @RequestParam Map<String, String> notasDientesParams,
+	        @RequestParam("botonesVisibles[]") List<String> botonesVisibles) throws IOException {
+	    System.out.println("dientesEvaluados: " + Arrays.toString(dientesEvaluados));
+	    System.out.println("comentariosGenerales: " + comentariosGenerales);
+	    System.out.println("pacienteId: " + pacienteId);
+	    System.out.println("odontologoId: " + odontologoId);
+	    System.out.println("notasDientesParams: " + notasDientesParams);
+	    System.out.println("botonesVisibles: " + botonesVisibles);
+	    
+	    odontogramaService.crearOdontograma(dientesEvaluados, comentariosGenerales,
+	            pacienteId, odontologoId, notasDientesParams, botonesVisibles);
+	    return "redirect:/odontograma/odontogramas";
 	}
 
 	@GetMapping("/new_frontend")
