@@ -80,12 +80,6 @@ public class OdontogramaController extends HtmlUtils {
 	        @RequestParam("odontologo") int odontologoId, 
 	        @RequestParam Map<String, String> notasDientesParams,
 	        @RequestParam("botonesVisibles[]") List<String> botonesVisibles) throws IOException {
-	    System.out.println("dientesEvaluados: " + Arrays.toString(dientesEvaluados));
-	    System.out.println("comentariosGenerales: " + comentariosGenerales);
-	    System.out.println("pacienteId: " + pacienteId);
-	    System.out.println("odontologoId: " + odontologoId);
-	    System.out.println("notasDientesParams: " + notasDientesParams);
-	    System.out.println("botonesVisibles: " + botonesVisibles);
 	    
 	    odontogramaService.crearOdontograma(dientesEvaluados, comentariosGenerales,
 	            pacienteId, odontologoId, notasDientesParams, botonesVisibles);

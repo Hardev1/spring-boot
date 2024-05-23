@@ -259,7 +259,6 @@ function actualizarCampoOculto() {
     }).join(',');
     
     dientesEvaluadosInput.value = dientesEvaluados;
-    console.log("Campo oculto actualizado:", dientesEvaluadosInput.value);
 }
 
 function limpiarCampos() {
